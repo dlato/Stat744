@@ -1,0 +1,83 @@
+Stats744: Data Visualization
+
+
+Sep 9, 2019
+How Humans See Data: John Rauser video:
+https://www.youtube.com/watch?v=fSgEeI2Xpdc
+
+	-way easier for ppl to know what is going on when you visualize it
+	-users dont even need to think about what they are looking at
+	-tables are bad
+	-what TYPE of visualization you use is important!
+	-3 visual operations of pattern preception (how humans decode a graph):
+		1. Detection:recognizing that a geometric object encodes a value
+		2. Assembly: grouping of detected elements (^)
+		3. Estimation: visual assessment of relative magnitude of 2 or more quantative values
+	-Estimation:
+		-3 levels of estimation:
+			a. discrimination (two things are or are not the same)
+			b. ranking (one is bigger or smaller)
+			c. ratioing (can tell what ratio btwn 2 values is)
+		-efficent comparison of values visually
+		-so we want to do a-b above as efficently and accuratly as possible
+		-7 most important things when presenting data from most effective to least effective:
+			-Position along a common scale 
+			-Positin on identical but nonaligned scales
+			-Length
+			-Angle or Slope
+			-Area
+			-Volume or density or colour saturation
+			-Colur hue
+		-so you think about what you want to show and try to show it using top stuff first then go to the bottom, the more comparisons you want to make the more of this you will have to include
+		-so if you want to compare 2 values, you should physically out them beside eachother on the graph or table or whatever
+		-the farther they are apart the harder it is for us to see if they are different or not
+		-if ppl need to refer to your legend to remember what colour is what then it will take them longer to get the info you want them to because it is a "table look-up"
+		-alphabetical is almost NEVER good! we hardle see things like that IRL and therefore its harder for us to get
+		-saturation is easier for ppl to discriminate over hue. so going from light to dark of the SAME colour is easier and provides a natural ordering. where as hue does not
+		-ratioing is easier with saturation than hue, bc we are better at estimating it than comparing btwn colours
+		-area means making something x times bigger in the physical size of the circle if it actually is x times bigger in value. here it is super easy to do ratio
+		-area is only good if zero value means it would be zero in size. and we are changing the area not the radius!
+		-length is used all the time when we are looking at errorbars
+		-position on identical but not aligned scales would be 2 graphs side by side with the same x-axis scale but different y axis
+		-NEVER USE STACKED BAR GRAPHS
+		-hue is good for categorical data!! v effective
+		-parallel coordinates chart is better than stacked
+		-so if you want total infor but also how many of each in each category then you should just have 2 charts side by side to show that instead of trying to cram it all into one graph.
+		-and this is bc stacking makes us decode length which is way down the list compared to position on a common scale which we are really good at
+		-pie charts suck.
+		-comparison is super easy on a common scale
+		-so insetad of having 2 graphs with the same x-axis but different y axis you can just plot them on the same graph, by standardizing the series so they are now on the same "scale"
+		-there are always trade offs bc then you lose information liek the absoloute value of the data but still can be more effective. so always think about what you are trying to show and how you do that most effectively
+		-scatter plot shows things the best!
+		-we can easily see how 2 things are reltated to eachother to see if they both go up together or not
+		-so whatever is most important you should plot it directly so that you get the most effective graph
+		-humans are super good at taking meaningless shapes and filling in the blanks and making a full picture even if its not necessarally there
+		-we will group together objects that go in a similar direction, which makes it easy for us to get the point of the graph
+		-so how we order data (not alphebitcal but maybe by magnitude) is super important bc we can often fill in the blanks of what the trends should be
+		-tend to see elements that are physically similar as part of the same group
+		-shape and colour are good ways to do this
+		-redundancy is good so do different shapes and colour and maybe even put like error bar tubes around the data to further segment it into your categories
+		-dodged bar charts are often a bad idea
+		-lines for a grid sometimes are distracting! so make them muted!
+		-important to have the points be sufficently luminant from the background (so contrast) so they are easy to see)
+		-so grid lines are sometimes usefull bc we are better at detecting differences btwn small numbers than big differences. so when the difference looks big bc the size of the bars or numbers is small we are better at it than when the bars are big.
+		-so grid lines can be good bc they put that "JUST noticable" difference into a frame and then we can easily see it and compare
+		-we can best detect slope when it is near 45deg so bank your slopes to be close to that so ppl can tell better, so log scale or whatever
+		-change axis so average slope is 45deg
+
+
+
+
+Data Visualization Book:
+https://serialmentor.com/dataviz/
+
+	Coordinate systems and axes:
+		-tall and narrow figs emphasize change on the y axis
+		-short and wide figs emphasize change on the x axis
+		-if change is equal on x and y then they spacing and aspect ratio should be equal
+		-when using log transformed data, always specify the base in the axis label
+		-when doing a ratio (so like number divided by mean) it should always be on a log scale so you can actually see the differences. otherwise it is too squished.
+		-square root scale allows for the presence of 0 where as a log scale cant
+		-appropriate scaling should be used to make the point of the figure more obvious. so if it should be drastically decreasing, make the scale so the bars look like they are drastically decreasing.
+		-polar coords is good when you are dealing with cyclical data or periodic data. bc then your first and last points will be close together
+		-
