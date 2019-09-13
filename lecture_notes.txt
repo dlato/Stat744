@@ -1,4 +1,60 @@
 Stats 744: Lecture Notes
 
-Sep 10, 2019:
+Sep 10, 2019: Scales and How humans visualize data
+	-other scales are just as useful (like log) as linear scales
+	-if data is related or anchored to our data then we can use this to think about how we want to show our data, should it be ratios?
+	-sometimes we have another natural anchor that is not zero
+	-so sometimes if our data has zero on the graph but our data is no where near zero then it makes the slope  or whatever trends hard to see
+	-girdlines are important bc it lets us see the trends more clearly bc it gives us a bit of a reference point
+	-you really can make you data look like your story supports whatever you are suposed to say
+	-can choose an anchor so some arbitrary line you choose showing an average or whatever so you can compare the rest of your data to that
+	-and choosing an anchor is a scientific decision, this matters in the message you send, but more importantly does it convey accurate info
+	-it is super easy to be misleading with your figures, espically when you try to assoicate a physical area to values but inaccuratly
+	-it is ok to use area if you are comparing fairly, so its a physical quantity, num of something, but the ratios are correct. so you anchor to 0 or whatever acutually makes sense. position on shared access is proportional
+	-log scale is often good for physical quantities, like where zero means zero and you dont have a negative
+	-always make sure that the scale is more relevant for the scientific accuracy or the story you want to tell
+	-points and error bars are usually better than bar graphs
+	-differences between transforming your data or just putting your data on a log scale. one changes your points and the other just changes the axis so that points are closer or farther or whatever
+	-when we are dealing with probability we should be dealing with the log odds scale, bc small probabilities should look bigger than big probabilities
+	-so for showing you data its usually ok for visualization to transform your data, but if you are doing stats on that then you should usually NOT transform your data
+	-if you have extreme values after transforming ggplot will put your extreme values ON the axis line 
+	-otherwise, if you do not use ggplot then you should just increase your scale so use log(1+x) instead of log(x)
+	-so with odds it is basically saying this doubles instead of increases by x amount
+	-it is therefore a natural place to think about differences (in some cases, when we are looking at probabilities)
+	-we do this so that we can always put things into a linear distance
 	
+Sep 13, 2019: History of Data Viz
+	-Tukey, super important in some basic stats that ppl use all the time
+	-with big datasets, then there will have lots of outliers just bc, so its not necessarally an issue
+	-bag plot is similar to a box plot but shows it in a more robust way
+	-so even with the age of comps we still like Tukeys quick ways to look at our data bc we are always getting more data always so we still need to do things computationally efficently
+	-Cleveland showing ppl the same data but in 2 diff graphs and then asked ppl to make inferences about the data. found that ppl are better at looking at position rather than angles (goes back to stuff from video)
+	-so Cleveland was good bc he actually tested how good ppl are at differentiating instead of just saying "I feel"
+	-Mechanical Turk (getting ppl to do your tests across the world, and get paid very little per question)
+	-Tufte has a lot of strong opinions, basically think that you should maximize info in your graph and really saying is this conveying info or not
+	-everything about the figure should be in the legened or in caption, if its in the text...its hard for ppl to find and therefore understand
+	-so an example of Tufte not wanting all the extra stuff you can put it in a tufte boxplot where there is no "box" but this really gives minimal minimal picture
+	-its also culture bc some fields may be used to a certain type of graph, which can make it hard to decide if that graph is wrong..what do you use? things to think about
+	-putting your legend lables are sometimes better to put lable actually on graph in the same colour as you are using, ggplot does this automatically (direct lables package)
+	-ggrepel will automatically push points and lables to empty parts of the graph so you can see them
+	-the most important thing is reproducibility, so other ppl can do what you also want to do
+	-so editing manually like in illustrator or something. 
+	-nice set of rules to decide what you should put on what axis and how to use colours...etc
+	-y-axis is most important!
+	-want to put the most numbers/categories of something on the x-axis then put the only 2 treatments or whatever as colours bc its easier for ppl to distinguish 2 colours than 10, so the 10 would go on the x-axis
+	-if you have 2 categories that are equal, like MF and 2 temp categories do you put them on the x-axis or in colours? it depends on what you are most interested in. so whatever you are more interested in should always be on the legend. so its easier to compare within groups than btwn groups bc they are physically closer.
+	-so what you are interested in should go as close together as possible.
+	-facet_wrap : assumes that you have one categorical variable but with LOADS of categories, ggplot will then put all your x categories onto the same graph, and usually puts it left to right, top to bottom like how ppl are used to reading
+	-facet_grid : will arrange it as groups, so rows are one group and cols are another group
+	-so how do you choose?
+	-so if you want to compare across A then its easier to compare across rows so facet_grid would be better
+	-but if you want to compare A and B then it may be better to do facet_wrap
+	-transparent is always good too so you can make the most important stuff visually eye catching.
+	-if you need to know what group something is in v.s. if you just need to know they are different also impacts how you should pick colours or groupings
+	-the computers defaults of ordering is usually bad
+	-do you want to show means and SD and distribution? or do you want to show inferrential differences so just error and point?
+	-usually you should not combine those bc they are often on diff scales
+	-so its always picking what you are more interested in and going with that, if you can't fit all your stuff onto one graph
+	-notches add in an inferrential overlay onto a boxplot that is showing discriptive stuff. so a way to sort of combine both, but does not work with small dataset
+	-3D makes it really hard for us to tell if one thing is taller than another bc perspective is hard. so avoide it if you can
+	-
