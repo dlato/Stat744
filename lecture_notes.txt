@@ -57,4 +57,32 @@ Sep 13, 2019: History of Data Viz
 	-so its always picking what you are more interested in and going with that, if you can't fit all your stuff onto one graph
 	-notches add in an inferrential overlay onto a boxplot that is showing discriptive stuff. so a way to sort of combine both, but does not work with small dataset
 	-3D makes it really hard for us to tell if one thing is taller than another bc perspective is hard. so avoide it if you can
-	-
+
+Sep 17, 2019: Exploratory Graphics
+	-be careful about how you are looking at your data bc your desires can influence how you do your analysis
+	-be careful bc if you have enough, then stuff can be sig by chance!
+	-look at predictor and response variables separately so you can look at whats up without making too many weird assumptions
+	-so if you get other ideas while you are looking at your data about other things you can look at, just make sure you lable it as exploratory so that you wont be making assumptions on something that was not collected or implemented properly
+	-with individual variables we often want to look at the shape of that data so we can then decide what tests to do on the data
+	-think about weather we want to make parametric or non-parametric assumptions. so goes back to wheather we show the means and SE or the distribution. so this will require different tests
+	-plotting standard deviation means that you are making a non-parametirc assumption, SE is parametric assumption
+	-this is where log vs linear scale is important bc it will impact what assumptions you make
+	-so in the ex when you analize the data, if your SD are more similar across samples or whatever then it will be better to do analysis on later, so log scale is good in this case
+	-think about it biologically and what you should see and if that makes sense with your scale
+	-so all the classics, box plots, violin plots, SD and mean, SE and mean...etc are good ways to explore
+	-if all your values are going to stay positive consider maybe doing a log scale bc they will always stay positive
+	-so again depending on what you are looking at, arithmatic mean vs geometric mean may be easier to understand and may be better to convey your point
+	-geometric mean = mutiplying, arithmatic = adding
+	-so if you are interested in ppls behavious you may want to look at this on a log scale so that you can tell better. vs. if you are worried about making money then you should be looking at it on a linear scale.
+	-can change the width of your box plots to be the width of how much data you have in each category bc then its really easy to see that you have less data in a certain category and therefore maybe cant make any inferences bc there is just not enought data
+	-get things into a human readable form thats the best
+	-so if your points jump in order of mag a lot then log is probs better than normal data
+	-remember on the log scale that if you say log10 particles per micro l is 3 times more, is NOT a physical value so its not actually 3 times more bc its on a LOG scale, which bring these numbers closer than they actually are
+	-visually you do not want things to be too spikey, bc it is harder to tell whats up, bc humans are better at seeing trends when it is closest to the 45deg angle
+	-try messing with the aspect ratio so ratio of xaxis scale vs yaxis scale, to try to play with this to make your data clear
+	-lattice in r will automatically make the aspect ratio nicely, possibly in ggplot but not sure how automatic it is
+	-with lots of noisy data, having a smooth line on top is good so that you can see the trend underneath
+	-scatterplots are good and go to for scatter plots
+	-if you have lots of points you want to add on some sort of interpolation so you can see it
+	-transparancy is good to show density if you have more data in one section on another
+	-scale size area is also good to show density of the area

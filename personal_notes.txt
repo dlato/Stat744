@@ -80,4 +80,9 @@ https://serialmentor.com/dataviz/
 		-square root scale allows for the presence of 0 where as a log scale cant
 		-appropriate scaling should be used to make the point of the figure more obvious. so if it should be drastically decreasing, make the scale so the bars look like they are drastically decreasing.
 		-polar coords is good when you are dealing with cyclical data or periodic data. bc then your first and last points will be close together
+
+	Colour:
+		-colour can be used to hilight, distinguish groups of data, or represent data values
+		-depending on what you want to show, sometimes you dont want your colours to be ordered otherwise it may imply an order in the data, and you want distinct colours if you are showing distinct data (so not continuous unless you can have continus values in the data)
+		-so you can have your data, like a bar chart for example ordered and then have diff colours that will show another trend you want to hilight like regions on a map. (ex Fig 4.2)
 		-
