@@ -7,6 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggthemes)
+library(ggplot2)
+library(directlabels)
+options(scipen=10000)
 ```
 
 ## Original Graph
@@ -16,28 +20,73 @@ The following homework assignment is about Jia You’s online graphic about vacc
 
 ## What question is this graphic trying to answer?
 I believe that this graphic is trying to answer the question: Do vaccines work?
-I think that the author is trying to show that after a vaccine has been licenced for a number of diseases, the number of reported cases (in the U.S.) decreases.
+I think that the author is trying to show that after a vaccine has been licensed for a number of diseases, the number of reported cases (in the U.S.) decreases.
 Hence, matching the title of the graphic that "visual proof of why vaccines do more good than harm".
 
-## Create 2 new plots with the data
+## Create 2 new plots with the same data
+
+Read in and prep the data.
 ```{r read dat}
 vac_dat <- read.csv("vaccine_data_online.csv")
+#make dataframe for vaccination licenceing
+vac_l <- vac_dat[which(vac_dat$vaccine != "FALSE"),]
+vac_l <- vac_l[,c(3,4)]
+vac_l <- vac_l[!duplicated(vac_l$disease),]
 ```
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Graph 1:
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+The first graph shows the total number of reported cases for each disease in the U.S.
+The black vertical lines show the year that the vaccine was licensed for each disease.
+```{r g1}
+g1 <- ggplot(vac_dat, aes(x = year, y = cases, color = disease))+
+  geom_line()+
+  theme_classic() +
+  theme(legend.position = "none")
+g2_fac <- g1 + facet_wrap(~disease)
+g2_fac + geom_vline(data = vac_l, aes(xintercept = year)) +
+  xlab("Year") +
+  ylab("Number of Reported Cases in U.S.")
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+Log Transformed:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+The graph below is the same as the previous one but with the number of cases has been log transformed (log base 10).
+I found it hard to notice the decrease in the number of reported cases in some of the diseases like Pertussis and Polio because there were less reported cases than Measles.
+
+```{r g1log}
+#log transform
+vac_dat$cases <- log10(vac_dat$cases)
+#graph
+g1_log <- ggplot(vac_dat, aes(x = year, y = cases, color = disease))+
+  geom_line()+
+  theme_classic() +
+  theme(legend.position = "none")
+g2_log_fac <- g1_log + facet_wrap(~disease)
+g2_log_fac + geom_vline(data = vac_l, aes(xintercept = year)) +
+  xlab("Year") +
+  ylab("Number of Reported Cases in U.S. (log10)")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Discussion:
+
+In all of the above graphs the data is read from right to left which may be culturally easier to read than the original graph which is read from top to bottom.
+I also find it easier to see the decreasing trend when it is presented as a line.
+Classically humans are better at deciphering trends when they are on a common axis, which is what my graphs show compared to the original graph by Jia You.
+Area is also ranked low on Cleavland's list of how accurately humans can visually process data.
+I think this makes it hard to interpret Jia You's graph because you are forced to decipher area instead of position along a common axis.
+
+
+
+### Graph 2:
+```{r g2}
+```
+
+
+
+
+
+## Fun Graphic:
+This homework reminded me of one of my favorite data visualization artists Mona Chalabi. She has a really neat visualization of vaccination data
+[here.](https://instagram.com/p/BtTjIYwngqn/)
