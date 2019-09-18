@@ -28,6 +28,9 @@ Hence, matching the title of the graphic that "visual proof of why vaccines do m
 Read in and prep the data.
 ```{r read dat}
 vac_dat <- read.csv("vaccine_data_online.csv")
+#now re-ordering the data 
+vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN = mean))
+vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN =function(x) -x[1]))
 #make dataframe for vaccination licenceing
 vac_l <- vac_dat[which(vac_dat$vaccine != "FALSE"),]
 vac_l <- vac_l[,c(3,4)]
@@ -80,10 +83,29 @@ I think this makes it hard to interpret Jia You's graph because you are forced t
 
 
 ### Graph 2:
+This graph shows the same vaccination data as distributions on a ridgeline graph. The black vertical lines represent the year that the vaccine was licenced for the disease.
+The number of cases has been log transformed.
+
 ```{r g2}
+g_area <- ggplot(vac_dat, aes(x = year, y = cases)) + 
+  geom_area(aes(color = disease, fill = disease), 
+            alpha = 0.5, position = position_dodge(0.8))+
+  theme_classic() +
+  theme(legend.position = "none") +
+  geom_vline(data = vac_l, aes(xintercept = year)) +
+  xlab("Year") +
+  ylab("Number of Reported Cases in U.S. (log10)")
+  
+g_area + facet_wrap(~disease)
 ```
 
 
+### Discussion:
+This graph utalizes the area component of Jia You's graph, having a physical area of the graph represent the number of cases.
+I find it easier to see the trend that the number of cases (in the U.S.) decreases after the vaccination date with the area "coloured in".
+It is easy to see that at the beginning of the time series (before vaccination licence) that the number of cases was higher than after the vaccination of each disease was licenced.
+It is also helpful to have all the graphs displayed in one picture in an orderly format.
+This makes it easy to compare between diseases and identify similar trends across all diseases.
 
 
 
