@@ -60,8 +60,6 @@ The graph below is the same as the previous one but with the number of cases tra
 I found it hard to notice the decrease in the number of reported cases in some of the diseases like Pertussis and Polio because there were less reported cases than Measles.
 
 ```{r g1log}
-#log transformation
-vac_dat$cases <- log10(vac_dat$cases)
 #graph
 g1_log <- ggplot(vac_dat, aes(x = year, y = cases, color = disease))+
   geom_line()+
@@ -71,7 +69,7 @@ g2_log_fac <- g1_log + facet_wrap(~disease)
 g2_log_fac + geom_vline(data = vac_l, aes(xintercept = year)) +
   scale_y_log10() +
   xlab("Year") +
-  ylab("Number of Reported Cases in U.S. (log10)")
+  ylab("Number of Reported Cases in U.S.")
 ```
 
 ### Discussion:
@@ -79,22 +77,19 @@ g2_log_fac + geom_vline(data = vac_l, aes(xintercept = year)) +
 In all of the above graphs the data is read from right to left which may be culturally easier to read than the original graph which is read from top to bottom.
 I also find it easier to see the decreasing trend when it is presented as a line.
 Classically humans are better at deciphering trends when they are on a common axis, which is what my graphs show compared to the original graph by Jia You.
-Area is also ranked low on Cleavland's list of how accurately humans can visually process data.
+Area is also ranked low on Cleveland's list of how accurately humans can visually process data.
 I think this makes it hard to interpret Jia You's graph because you are forced to decipher area instead of position along a common axis.
+I have also re-ordered the data by mean number of cases reported.
+We have learned that the default (usually alphabetical) order is almost never an intuitive way to present the date.
+This re-ordering makes it easier to compare between diseases and see which ones have more reported cases on average.
 
 
 
 ### Graph 2:
-This graph shows the same vaccination data but with an area component. The black vertical lines represent the year that the vaccine was licenced for the disease.
+This graph shows the same vaccination data but with an area component. The black vertical lines represent the year that the vaccine was licensed for the disease.
 The number of cases has been log transformed.
 
 ```{r g2}
-#read in data
-vac_dat <- read.csv("vaccine_data_online.csv")
-#now re-ordering the data 
-vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN = mean))
-vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN =function(x) -x[1]))
-#make dataframe for vaccination licenceing
 g_area <- ggplot(vac_dat, aes(x = year, y = cases)) + 
   geom_area(aes(color = disease, fill = disease), 
             alpha = 0.5, position = position_dodge(0.8))+
@@ -112,8 +107,6 @@ Log Transformed:
 Again, the graph below is the same as the previous one but with the number of cases transformed (log base 10).
 
 ```{r g2_log}
-#log transformation
-vac_dat$cases <- log10(vac_dat$cases)
 g_area_log <- ggplot(vac_dat, aes(x = year, y = cases)) + 
   geom_area(aes(color = disease, fill = disease), 
             alpha = 0.5, position = position_dodge(0.8))+
@@ -128,9 +121,9 @@ g_area_log + facet_wrap(~disease)
 ```
 
 ### Discussion:
-This graph utalizes the area component of Jia You's graph, having a physical area of the graph represent the number of cases.
+This graph utilizes the area component of Jia You's graph, having a physical area of the graph represent the number of cases.
 I find it easier to see the trend that the number of cases (in the U.S.) decreases after the vaccination date with the area "coloured in".
-It is easy to see that at the beginning of the time series (before vaccination licence) that the number of cases was higher than after the vaccination of each disease was licenced.
+It is easy to see that at the beginning of the time series (before vaccination licence) that the number of cases was higher than after the vaccination of each disease was licensed.
 It is also helpful to have all the graphs displayed in one picture in an orderly format.
 This makes it easy to compare between diseases and identify similar trends across all diseases.
 
