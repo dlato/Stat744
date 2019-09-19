@@ -85,4 +85,22 @@ https://serialmentor.com/dataviz/
 		-colour can be used to hilight, distinguish groups of data, or represent data values
 		-depending on what you want to show, sometimes you dont want your colours to be ordered otherwise it may imply an order in the data, and you want distinct colours if you are showing distinct data (so not continuous unless you can have continus values in the data)
 		-so you can have your data, like a bar chart for example ordered and then have diff colours that will show another trend you want to hilight like regions on a map. (ex Fig 4.2)
-		-
+		-colour hue is what we use when we want to say one value is > another or how distant 2 particular values are from a range
+		-hue can be same col or different, but it has to look "natural" sunrise...etc
+		-diverging col scale is when the ligthest colours are in the middle and we want to hilight the 2 extremes
+		-can use light and dark versions of the colours to hilight certain bars or points in the data (baseline cols need to be drab!)
+
+	Visualizing Amounts:
+		- bar graphs are most popular
+		- if your lables are too long, swap x and y axis for a pretty pic
+		-ALPHABETICAL IS ALMOST NEVER GOOD (pick a meaningful order)
+		- whatever you care more about (if you are dealing with multiple catories/factors, then that should be the grouping on the x axis (so in fig 6.8 we care more about wages as it varies with race, so we make age bars within each race then its easy to see black makes less)
+		- facet is usually better than diff coloured bars
+		- again, if our values do not contain zero, the adjust your scale so that you can see the variation in the data better
+	
+	Visualizing Distributions:
+		- when making a histogram always explore bin widths to make sure you get one that shows the trend the best (not too big, not too small, just right)
+		- kernal density graphs create area under the curve tryp graphs and work well for large datasets
+		- always keep in mind the biology and if it makes sense for you to have negative data...etc
+		- when showing how things range over 2 categories and they add up (like M anf F passengers = total passengers) you can plot the two side by side but have the total number as a "third" group (Fig 7.9 is really nice!)
+		- for several distributions, kernal density plots are better than histograms
