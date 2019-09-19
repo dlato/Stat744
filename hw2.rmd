@@ -32,6 +32,7 @@ vac_dat <- read.csv("vaccine_data_online.csv")
 vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN = mean))
 vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN =function(x) -x[1]))
 #make dataframe for vaccination licenceing
+#to be used in later graphs
 vac_l <- vac_dat[which(vac_dat$vaccine != "FALSE"),]
 vac_l <- vac_l[,c(3,4)]
 vac_l <- vac_l[!duplicated(vac_l$disease),]
@@ -55,11 +56,11 @@ g2_fac + geom_vline(data = vac_l, aes(xintercept = year)) +
 
 Log Transformed:
 
-The graph below is the same as the previous one but with the number of cases has been log transformed (log base 10).
+The graph below is the same as the previous one but with the number of cases transformed (log base 10).
 I found it hard to notice the decrease in the number of reported cases in some of the diseases like Pertussis and Polio because there were less reported cases than Measles.
 
 ```{r g1log}
-#log transform
+#log transformation
 vac_dat$cases <- log10(vac_dat$cases)
 #graph
 g1_log <- ggplot(vac_dat, aes(x = year, y = cases, color = disease))+
@@ -68,6 +69,7 @@ g1_log <- ggplot(vac_dat, aes(x = year, y = cases, color = disease))+
   theme(legend.position = "none")
 g2_log_fac <- g1_log + facet_wrap(~disease)
 g2_log_fac + geom_vline(data = vac_l, aes(xintercept = year)) +
+  scale_y_log10() +
   xlab("Year") +
   ylab("Number of Reported Cases in U.S. (log10)")
 ```
@@ -83,10 +85,16 @@ I think this makes it hard to interpret Jia You's graph because you are forced t
 
 
 ### Graph 2:
-This graph shows the same vaccination data as distributions on a ridgeline graph. The black vertical lines represent the year that the vaccine was licenced for the disease.
+This graph shows the same vaccination data but with an area component. The black vertical lines represent the year that the vaccine was licenced for the disease.
 The number of cases has been log transformed.
 
 ```{r g2}
+#read in data
+vac_dat <- read.csv("vaccine_data_online.csv")
+#now re-ordering the data 
+vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN = mean))
+vac_dat$disease <- with(vac_dat, reorder(disease, cases, FUN =function(x) -x[1]))
+#make dataframe for vaccination licenceing
 g_area <- ggplot(vac_dat, aes(x = year, y = cases)) + 
   geom_area(aes(color = disease, fill = disease), 
             alpha = 0.5, position = position_dodge(0.8))+
@@ -94,11 +102,30 @@ g_area <- ggplot(vac_dat, aes(x = year, y = cases)) +
   theme(legend.position = "none") +
   geom_vline(data = vac_l, aes(xintercept = year)) +
   xlab("Year") +
-  ylab("Number of Reported Cases in U.S. (log10)")
+  ylab("Number of Reported Cases in U.S.")
   
 g_area + facet_wrap(~disease)
 ```
 
+Log Transformed:
+
+Again, the graph below is the same as the previous one but with the number of cases transformed (log base 10).
+
+```{r g2_log}
+#log transformation
+vac_dat$cases <- log10(vac_dat$cases)
+g_area_log <- ggplot(vac_dat, aes(x = year, y = cases)) + 
+  geom_area(aes(color = disease, fill = disease), 
+            alpha = 0.5, position = position_dodge(0.8))+
+  theme_classic() +
+  theme(legend.position = "none") +
+  geom_vline(data = vac_l, aes(xintercept = year)) +
+  scale_y_log10() +
+  xlab("Year") +
+  ylab("Number of Reported Cases in U.S.")
+  
+g_area_log + facet_wrap(~disease)
+```
 
 ### Discussion:
 This graph utalizes the area component of Jia You's graph, having a physical area of the graph represent the number of cases.
