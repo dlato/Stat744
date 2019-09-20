@@ -86,3 +86,74 @@ Sep 17, 2019: Exploratory Graphics
 	-if you have lots of points you want to add on some sort of interpolation so you can see it
 	-transparancy is good to show density if you have more data in one section on another
 	-scale size area is also good to show density of the area
+
+Sep 20, 2019: Exploratory Graphics:
+	-Anscombe's quartet: 4 x-y data plots that all have the same mean, covariance, ...etc. so they are very easy to combine. all the standard bivariate summary stats are all the same btwn the plots. so its easy to compare
+	-so this group of graphs is a really useful way to look at the data to get the general idea about your data and what it looks like and is useful so you dont miss any weird trends. better than doing a lot of tests to check for all the things you can think of
+	-scatter plots are generally good, trendlines are usually good when you have too much data
+	-confidence intervals are infferential NOT discriptive, bc they are tlaking about the line you drew not the data itself. if we want to see the distribution of the data, we need to do something else
+	-violin plots are supposed to be representing the probability density, so you are changing a bunch of points to a distribution/continuous density, it does this by computing the kernal density estimator, which takes a set of points and sum a typically symmertic and smoot function (k) that decreases with distance. (so like a bell shaped curve, gaussian distribution). Then you get a kernal density estimate at a give point x, is the sum over all the locations of the kernal value at that distance. sort of like a histogram but with a sliding window. but they make it smooth off the bat so the output is a smooth non-parametric results.
+	-so just like in histograms you need to choose the bin width correctly, the kernal also has a similar issue that you have to choose the bandwidth (width of the gaussian curve) that is good to summarize the data. but both of these are done automatically and huristically
+	-so this is why when we do violin plots on not very many points we get weird bumpy violin plots.
+	-geom_density_2d() is a 2D kernal to the density, so you get these contour graphs
+	-defalt gor this is not super human readable, so the density colours are hard to show bc ppl do not understand the "density levels", also the default colours are shit and makes it harder to compare
+	-so with contours you want the inner sections to be more prominant compared to the outter edges so that they look more important and more dense so that there is no misinterpretation.
+	-hurrican and trump example (https://eeecon.uibk.ac.at/~zeileis//news/dorian_rainbow/)
+	-can put different categories having the contours ontop of eachother, but you should choose fewer contours or use facet, but again these all come with pros and cons
+	-also have to think about colour blind and how it would look
+	-for big datasets you can use hexes (geom_hex()) and it will go faster
+	-for hexes its counts per hex, and its nice bc it allows you to see all the datapoints where as with density it may be missed
+	-same general question as how many bars you put in a histogram, you can also choose the number of hexes carefully
+	-always the option to manually change the size of the bins/hexes/kernal stuff
+	
+	Colour:
+		-use clear gradients
+		-if the map contrasts with the background, zero should match the background
+		-if zero has a physical meaning, then go in one direction, red -> white, light -> dark, NOT blue -> white <- blue (no colour in the middle)
+		-but if there is a natural "middle" then you can use blue -> white <- red (colour in the middle)
+	
+	Multi-Variate:
+		- if you have lots of data, pairs plots are useful, but they only show the pairwise plots, but this is a good start
+		-so you can see how your diff categories are correlated, good summary of the data
+		-GGally: similar to ggpairs, so with factors it will do bar plot instead of kernal density plots, and instead of scatter plots, it will make box plots for factors, good overview of the whole dataset
+		-double decker plots, spine plots, mosaic plots: for highly multivariate NON-continuous data (categorical)
+		-it helps us show and understand the relationships btwn the datapoints, only when its continuous
+	
+	Diagnostic Graphics:
+		-it is important to not do any "snooping" when you are making assumptions before you see if you data fits that model or assumptions or whatever
+		-IRL our datasets are never really fitting into our "normal distributions"...etc
+		-all we care about is that our data is close enought to normal that our models are ok and good and fine
+		-broom package in R, is the extended from tidyverse, i
+		-tidy: will give you a coefficent table for a bunch of models in a consistant format with consistant commands, supposed to be unified
+		-augment: gives you predictons and inference measures
+		-glance: summary of the model
+		-so you do all these after you fit your model fo you can look at stuff and plot things
+		-qqplots tell us what kind of distribution your data is, heteroskedastic, fat tailed, thin tails...etc
+		-so the observed values are y-axis, and expected are on the x. so we can look and see how it would fit with the 1-1 line.
+		-so in this example we see that there are fat tails and its symmertical
+		-always want to be looking at the distribution of the residuals
+		-when fitting a model we need to worry about these things in order:
+			-mean model (bias)
+			-variance model (heteroscedasticity)
+			-distribution (non-normal..etc)
+		-residuals should have a constant mean zero
+		-you should be looking at the patterns in the residuals among the different categories to see whats wrong and you can fix the model
+		-did you leave out covariates and interactions? if its not linear, dont fit linear.
+		-think about using polynomal or splines to try and fix non-linear data
+		-heteroscidacity: when we plot residuals v fitted we should see a fan. this dosent really work if we have sampling errors or too many points
+		-so to fix this we do the square root of fitted and residuals to check and fix those things, here you want the graph to be flat
+		-low est plot? they can be wiggly but its usually fine
+		-should not use linear reg when doing diagnostics bc you want to see all the variation and weirdness so you can fix it
+		-box-cox: we have decided we want to transform the data and its not going to cause problems. so this is a family of transformations (power transformations) x to the power of lambda (where lambda can vary, obviously), so as lambda goes to zero it is a log transformation. so it draws a curve of the goodness of fit or likelyhood of data with confidence intervals of the best lambda so you can pick what transformation you should do
+		-this box-cox is said to be a rough guide for you to pick a whole number of lambda (in MASS:boxcox package), bc whole numbers are easier to explain and justify
+		-box-cox only handles POSITIVE data
+		-can calculate an autocorrelation plot which gives the distribution of the residuals over whatever scale you have (so time or along a chrom or whatever, something with a scae)
+		-can group the data from several residuals to get some goodness of fit for a log reg
+		-it takes fitted and residuals and groups the data for each of those and tries to see if there is variability of not
+		-so you basically bin residuals and it gives you numbers that are a bit easier to interpret
+		-can do the same thing but break the data into subsets of categories you already have so that you can then look at the residuals and see whats going on.
+		-basically you want to break things down to see if there are patterns that you may be missing
+		
+		-likelihood profiles: transforming curves to a straight line so you can see if it is quadratic or not
+		-if you can see a trend in a trace plot then thats bad, bc your MCMC is not efficently sampling your paramaters
+		-trace plots should look like just a band of up and down noise, no trends/patterns
