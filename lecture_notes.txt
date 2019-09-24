@@ -157,3 +157,26 @@ Sep 20, 2019: Exploratory Graphics:
 		-likelihood profiles: transforming curves to a straight line so you can see if it is quadratic or not
 		-if you can see a trend in a trace plot then thats bad, bc your MCMC is not efficently sampling your paramaters
 		-trace plots should look like just a band of up and down noise, no trends/patterns
+
+	Sep 24, 2019:What is happening when we do smooth lines
+		-loess is like the kernal smoothing, but is essentially fitting a quadratic regression on little pieces of the data, and like kernal smoothing its weighting and sliding the window. weights the points near the middle of the window more
+		-computationaly expensive
+		-O(N^2) computational notation that says the comp time increases to the number of data points to the squared. so comp time increases with increased num of points
+		-has a span thing that is similar to choosing the right bind width...etc, so you can change this to make the curve less or more wiggly
+		-mostly defaults are ok
+		-if you dont like the results, we usually switch. GAM, additive model, poisson....etc
+		-so geom_smooth( method = loess) or change it to whatever, geom has a default but we should specify it always 
+		-always make sure your warnings go away bc otherwise you are probs doing something wrong!
+		-mgcv fits way too many splices but then is figuring out how wiggly it is and then peanalizes the coefficents so that it brings back to a smooth curve, so the idea with this is that it is a more robst way to choose a curve
+		-sometimes with GAM you get lots of lines, which is usually bc it guessed wrong on the number of knots or bins
+		-so always just specify everything so that you dont get any warnings
+		-with GAMs you can tell it to use a poisson or least squares or whatever, so this is good if you have values that are going below zero when really you should not have that
+		-a good way to see whats up with your data is to plot all your x values against each y value? (see multiple continuous predictors, single response)
+		-pivot_longer is new and in tidy and a nice way to re-shape your data
+		-good way to get a sense of what is happening with all the univariate stuff (so cylinders, carbs, ...etc in the cars dataset) ^
+		-again this does not show interactions with other variables, just whats up
+
+		-library "sos" is good for trying to find a command or package or something like that. see lectre notes
+		-geom_path puts the points in the order they were in the dataset, where as genom_line assumes you x axis is the predictor variable, so you have to order your points based on the x and y var (so genotype data first, and then environment in the lecture notes)
+		-group =1 means that you can do points in diff colours of your groups, and then put a smooth genom line over all the groups if group =1 
+		-
