@@ -1,0 +1,80 @@
+---
+title: "Stats 744: hw3"
+author: "Daniella Lato"
+date: "27/09/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library("RColorBrewer")
+library("gplots")
+library("ggplot2")
+library("methods")
+library(methods)
+options("scipen"=100, "digits"=10)
+library(lattice)
+
+```
+
+## Goal:
+Turn a table that is hard to read into graphs that convey the information .
+
+## Data:
+The table that I have chosen to work with is new data from my thesis.
+I have selection coefficent information for all genes in four different bacterial species: *Escherichia coli*, *Bacillus subtilis*, *Streptomyces*, and *Sinorhizobium meliloti*.
+*S.meliloti* is a multi-repliconic bacteria (has more than one chromosome), and therefore each of the replicons is treated as a separate dataset in this analysis.
+Each bacteria has selection information on about 2600 genes, which is far too much for any human to read and understand.
+I will be creating graphics to better visualize this data.
+
+A PDF version of this data can be found [here](https://github.com/dlato/Stat744/blob/master/Supplementary_table_per_gene_dN_dS_omega.pdf).
+
+Read in and prepare data:
+```{r read dat}
+#read in all files for each bacteria
+file_list <- list.files(pattern ="*_plot_dat.csv")
+all_data <- do.call(rbind,lapply(file_list,read.csv))
+#number of bacterial replicons
+num_of_plots <- length(levels(all_data$bac))
+#make sure bacteria names are italicized
+levels(all_data$bac) <- c("ecoli" = expression(paste(italic("E.coli"), " Chromosome")),
+                          "bass" = expression(paste(italic("B.Subtilis"), " Chromosome")),
+                          "strep" = expression(paste(italic("Streptomyces"), " Chromosome")),
+                          "sinoC" = expression(paste(italic("S.meliloti"), " Chromosome")),
+                          "pSymA" = expression(paste(italic("S.meliloti"), " pSymA")),
+                          "pSymB" = expression(paste(italic("S.meliloti"), " pSymB")))
+```
+
+
+```{r g1}
+#choose colours
+colours_arr <- rep(c("#969696","#D9D9D9","#525252"),num_of_plots)
+p<-ggplot(all_data, aes(x=class, y=log10(value), fill=class)) +
+  #adjust wisker ends of bar plot
+  #  stat_boxplot(geom = "errorbar", width = 0.3) +
+  #  geom_boxplot() +
+  geom_violin() +
+#  geom_boxplot(width=.1, outlier.shape=NA,) +
+  geom_boxplot(width=.1, outlier.shape=NA, fill = colours_arr) +
+  stat_boxplot(geom = "errorbar", width = 0.2) +
+  #  geom_jitter(height = 0, width = 0.1)+
+  facet_wrap(~bac, labeller=label_parsed)+
+#  facet_grid(~bac,
+#             labeller = labeller(bac = bac.labs)) +
+#  ggtitle(mytitle) +
+  xlab("") +
+  ylab("Value (log10)") +
+#  theme(strip.background =element_rect(fill="#d3d0cb"))+
+  theme(strip.background =element_rect(fill="#e7e5e2"))+
+  theme(strip.text = element_text(size =10)) +
+#  theme(strip.text = element_text(size =12, face="italic")) +
+  theme(legend.title = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        panel.background = element_rect(fill = "white", colour = NA),
+        panel.grid.major = element_line(colour = "grey90", size = 0.2),
+        panel.grid.minor = element_line(colour = "grey98", size = 0.5),
+        panel.spacing = unit(0.25, "lines"),
+        axis.text=element_text(size=10))
+p + scale_fill_manual(values=c("#969696", "#D9D9D9", "#525252"), labels = c(" dN", " dS", expression(omega))) +
+     scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
+
+```
