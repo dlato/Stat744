@@ -48,33 +48,32 @@ levels(all_data$bac) <- c("ecoli" = expression(paste(italic("E.coli"), " Chromos
 ```{r g1}
 #choose colours
 colours_arr <- rep(c("#969696","#D9D9D9","#525252"),num_of_plots)
-p<-ggplot(all_data, aes(x=class, y=log10(value), fill=class)) +
-  #adjust wisker ends of bar plot
-  #  stat_boxplot(geom = "errorbar", width = 0.3) +
-  #  geom_boxplot() +
+vio_bar<-ggplot(all_data, aes(x=class, y=log10(value), fill=class)) +
   geom_violin() +
-#  geom_boxplot(width=.1, outlier.shape=NA,) +
   geom_boxplot(width=.1, outlier.shape=NA, fill = colours_arr) +
   stat_boxplot(geom = "errorbar", width = 0.2) +
-  #  geom_jitter(height = 0, width = 0.1)+
   facet_wrap(~bac, labeller=label_parsed)+
-#  facet_grid(~bac,
-#             labeller = labeller(bac = bac.labs)) +
-#  ggtitle(mytitle) +
   xlab("") +
   ylab("Value (log10)") +
-#  theme(strip.background =element_rect(fill="#d3d0cb"))+
   theme(strip.background =element_rect(fill="#e7e5e2"))+
   theme(strip.text = element_text(size =10)) +
-#  theme(strip.text = element_text(size =12, face="italic")) +
   theme(legend.title = element_blank(),
         plot.title = element_text(hjust = 0.5),
         panel.background = element_rect(fill = "white", colour = NA),
         panel.grid.major = element_line(colour = "grey90", size = 0.2),
         panel.grid.minor = element_line(colour = "grey98", size = 0.5),
         panel.spacing = unit(0.25, "lines"),
-        axis.text=element_text(size=10))
-p + scale_fill_manual(values=c("#969696", "#D9D9D9", "#525252"), labels = c(" dN", " dS", expression(omega))) +
-     scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
+        axis.text=element_text(size=10)) +
+#make the omega a math symbol in both the legend and x-axis
+        scale_fill_manual(values=c("#969696", "#D9D9D9", "#525252"), labels = c(" dN", " dS", expression(omega)))  +
+        scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
 
+vio_bar
+
+```
+
+Legend might be repetitive so we can remove it.
+```{r g1 no legend}
+vio_bar + 
+  theme(legend.position = "none")
 ```
