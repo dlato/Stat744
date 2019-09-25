@@ -98,8 +98,6 @@ This is where the box plots are particularly helpful, because it is easy to see 
 Since some of the selection values are very small (almost or close to zero) I decided to transform the y-axis to be on a log scale to allow for the distribution to be easier to see.
 
 ```{r g2}
-#choose colours
-colours_arr <- rep(c("#CFE7C8","#D2E4DC","#A0747A"),num_of_plots)
 #plot
 strp_p <-(ggplot(all_data, aes(x=class, y=value, colour = class)) 
   #is geom_jitter the correct thing to use for a strip plot?
@@ -119,13 +117,13 @@ strp_p <-(ggplot(all_data, aes(x=class, y=value, colour = class))
         axis.text=element_text(size=10)) 
   + scale_color_manual(values=colours_arr)
 #make the omega a math symbol in both the legend and x-axis
-  + scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
++ scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
+ + stat_summary(fun.y=median, geom="point", shape=18, size=2, color="#023C40")
 ) 
 #  scale_y_log10()
 #  scale_y_continuous(trans='log10', limits=c(NA,1))
 #adding median values
-strp_p + stat_summary(fun.y=median, geom="point", shape=18,
-                      size=2, color="#023C40")
+strp_p 
 ```
 
 This graph shows the same data but as a strip plot. 
@@ -135,3 +133,15 @@ Another biologically relevant feature is that typically $\omega$ should be less 
 That is, most genes should not be under positive selection.
 In this graph it is easy to see that there are very few genes that are under positive selection, and majority of the genes have very small dN, dS and $\omega$ values, meaning that there are very few substitutions in the DNA.
 The median dots (dark blue) also help illustrate the above meantions trends: dS > dN, and $\omega$ < 1 for majority of the genes.
+
+I also made this graph using a log scale (below) but I think the point that $\omega$ < 1 for most of the values is better illustrated without the log scale.
+Without the log scale the points are anchored at zero (which makes sense because you could have zero changes in the DNA and therefore $\omega$ = 0), and it is easy to see that the points are mostly below 0.5.
+On the log scale, this is harder to see. But this may just be preference.
+
+```{r log scale}
+(strp_p 
+  + scale_y_continuous(trans='log10')
+)
+```
+
+
