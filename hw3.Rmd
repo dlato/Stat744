@@ -95,7 +95,7 @@ I therefore chose lighter and similar colours for the dN and dS values and a bol
 It is also common for dS to be larger than dN.
 This is where the box plots are particularly helpful, because it is easy to see that dS is larger than dN in all of the bacteria. 
 
-
+Since some of the selection values are very small (almost or close to zero) I decided to transform the y-axis to be on a log scale to allow for the distribution to be easier to see.
 
 ```{r g2}
 #choose colours
