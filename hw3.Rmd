@@ -16,12 +16,20 @@ library(lattice)
 
 ```
 
+Figure out:
+
+colouring
+
+log stuff
+
+order of bac?
+
 ## Goal:
 Turn a table that is hard to read into graphs that convey the information .
 
 ## Data:
 The table that I have chosen to work with is new data from my thesis.
-I have selection coefficent information for all genes in four different bacterial species: *Escherichia coli*, *Bacillus subtilis*, *Streptomyces*, and *Sinorhizobium meliloti*.
+I have selection coefficent information for all genes in three different bacterial species: *Escherichia coli*, *Bacillus subtilis*, and *Sinorhizobium meliloti*.
 *S.meliloti* is a multi-repliconic bacteria (has more than one chromosome), and therefore each of the replicons is treated as a separate dataset in this analysis.
 Each bacteria has selection information on about 2600 genes, which is far too much for any human to read and understand.
 I will be creating graphics to better visualize this data.
@@ -30,50 +38,100 @@ A PDF version of this data can be found [here](https://github.com/dlato/Stat744/
 
 Read in and prepare data:
 ```{r read dat}
-#read in all files for each bacteria
-file_list <- list.files(pattern ="*_plot_dat.csv")
-all_data <- do.call(rbind,lapply(file_list,read.csv))
+#read in data
+all_data <- read.csv("selection_coeff_all.csv")
+#remove missing data to avoid warnings (NA's)
+all_data <- all_data[-which(is.na(all_data$value) == TRUE),]
 #number of bacterial replicons
 num_of_plots <- length(levels(all_data$bac))
 #make sure bacteria names are italicized
+#if there is a nicer way to do this so it works with facet I would love to know!
 levels(all_data$bac) <- c("ecoli" = expression(paste(italic("E.coli"), " Chromosome")),
                           "bass" = expression(paste(italic("B.Subtilis"), " Chromosome")),
-                          "strep" = expression(paste(italic("Streptomyces"), " Chromosome")),
                           "sinoC" = expression(paste(italic("S.meliloti"), " Chromosome")),
                           "pSymA" = expression(paste(italic("S.meliloti"), " pSymA")),
                           "pSymB" = expression(paste(italic("S.meliloti"), " pSymB")))
+
 ```
 
-
+### Graph 1:
 ```{r g1}
 #choose colours
-colours_arr <- rep(c("#969696","#D9D9D9","#525252"),num_of_plots)
-vio_bar<-ggplot(all_data, aes(x=class, y=log10(value), fill=class)) +
-  geom_violin() +
-  geom_boxplot(width=.1, outlier.shape=NA, fill = colours_arr) +
-  stat_boxplot(geom = "errorbar", width = 0.2) +
-  facet_wrap(~bac, labeller=label_parsed)+
-  xlab("") +
-  ylab("Value (log10)") +
-  theme(strip.background =element_rect(fill="#e7e5e2"))+
-  theme(strip.text = element_text(size =10)) +
-  theme(legend.title = element_blank(),
+colours_arr <- rep(c("#CFE7C8","#D2E4DC","#A0747A"),num_of_plots)
+#plot
+vio_bar<-(ggplot(all_data, aes(x=class, y=value, fill=class)) 
+  + geom_violin() 
+  + geom_boxplot(width=.1, outlier.shape=NA, fill = colours_arr) 
+  + stat_boxplot(geom = "errorbar", width = 0.2) 
+  + facet_wrap(~bac, labeller=label_parsed)
+  + xlab("") 
+  + ylab("Value") 
+  #setting up a theme that proabably can be condensed into less code
+  + theme(strip.background =element_rect(fill="#e7e5e2"))
+  + theme(strip.text = element_text(size =10)) 
+  + theme(legend.position = "none",
         plot.title = element_text(hjust = 0.5),
         panel.background = element_rect(fill = "white", colour = NA),
         panel.grid.major = element_line(colour = "grey90", size = 0.2),
         panel.grid.minor = element_line(colour = "grey98", size = 0.5),
         panel.spacing = unit(0.25, "lines"),
-        axis.text=element_text(size=10)) +
+        axis.text=element_text(size=10)) 
+  + scale_color_manual(values=colours_arr)
 #make the omega a math symbol in both the legend and x-axis
-        scale_fill_manual(values=c("#969696", "#D9D9D9", "#525252"), labels = c(" dN", " dS", expression(omega)))  +
-        scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
+  + scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega))) 
+  + scale_y_continuous(trans='log10', limits=c(NA,1))
+)
 
 vio_bar
 
 ```
 
-Legend might be repetitive so we can remove it.
-```{r g1 no legend}
-vio_bar + 
-  theme(legend.position = "none")
+The graph above shows violin plots of the data with box plots on top.
+This might be redundant information but I think it allows the distribution of data to be shown as well as some summary information that the box plot provides (quartiles, median..etc).
+I chose to use facet is that it is easy to compare the distribution of dN, dS, and \omega values between each of the bacterial replicons.
+Often in selection analysis, the \omega value is most important because it can give information about what kind of selection is acting upon a gene.
+I therefore chose lighter and similar colours for the dN and dS values and a bolder colour for the \omega value so it stands out and is the focal point of the graph.
+
+It is also common for dS to be larger than dN.
+This is where the box plots are particularly helpful, because it is easy to see that dS is larger than dN in all of the bacteria. 
+
+
+
+```{r g2}
+#choose colours
+colours_arr <- rep(c("#CFE7C8","#D2E4DC","#A0747A"),num_of_plots)
+#plot
+strp_p <-(ggplot(all_data, aes(x=class, y=value, colour = class)) 
+  #is geom_jitter the correct thing to use for a strip plot?
+  + geom_jitter(position=position_jitter(0.2)) 
+  + facet_wrap(~bac, labeller=label_parsed)
+  + xlab("") 
+  + ylab("Value") 
+  #setting up a theme that proabably can be condensed into less code
+  + theme(strip.background =element_rect(fill="#e7e5e2"))
+  + theme(strip.text = element_text(size =10)) 
+  + theme(legend.position = "none",
+        plot.title = element_text(hjust = 0.5),
+        panel.background = element_rect(fill = "white", colour = NA),
+        panel.grid.major = element_line(colour = "grey90", size = 0.2),
+        panel.grid.minor = element_line(colour = "grey98", size = 0.5),
+        panel.spacing = unit(0.25, "lines"),
+        axis.text=element_text(size=10)) 
+  + scale_color_manual(values=colours_arr)
+#make the omega a math symbol in both the legend and x-axis
+  + scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
+) 
+#  scale_y_log10()
+#  scale_y_continuous(trans='log10', limits=c(NA,1))
+#adding median values
+strp_p + stat_summary(fun.y=median, geom="point", shape=18,
+                      size=2, color="#023C40")
 ```
+
+This graph shows the same data but as a strip plot. 
+I like this version of the graph best because I think it is easier to show the distribution of the points and conveys biological properties clearly.
+Some of these were mentioned above, that dS is usually > dN, and than \omega is often the "most important" value to consider.
+Another biologically relevant feature is that typically \omega should be less than 1 for most genes.
+That is, most genes should not be under positive selection.
+In this graph it is easy to see that there are very few genes that are under positive selection, and majority of the genes have very small dN, dS and \omega values, meaning that there are very few substitutions in the DNA.
+The median dots (dark blue) also help illustrate the above meantions trends: dS > dN, and \omega < 1 for majority of the genes.
