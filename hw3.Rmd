@@ -13,12 +13,7 @@ library("methods")
 library(methods)
 options("scipen"=100, "digits"=10)
 library(lattice)
-
 ```
-
-Figure out:
-
-order of bac?
 
 ## Goal:
 Turn a table that is hard to read into graphs that convey the information .
