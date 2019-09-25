@@ -18,8 +18,6 @@ library(lattice)
 
 Figure out:
 
-log stuff
-
 order of bac?
 
 ## Goal:
@@ -118,11 +116,10 @@ strp_p <-(ggplot(all_data, aes(x=class, y=value, colour = class))
   + scale_color_manual(values=colours_arr)
 #make the omega a math symbol in both the legend and x-axis
 + scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega)))
+#adding median values
  + stat_summary(fun.y=median, geom="point", shape=18, size=2, color="#023C40")
 ) 
-#  scale_y_log10()
-#  scale_y_continuous(trans='log10', limits=c(NA,1))
-#adding median values
+
 strp_p 
 ```
 
