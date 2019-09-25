@@ -25,8 +25,8 @@ Turn a table that is hard to read into graphs that convey the information .
 
 ## Data:
 The table that I have chosen to work with is new data from my thesis.
-I have selection coefficent information for all genes in three different bacterial species: *Escherichia coli*, *Bacillus subtilis*, and *Sinorhizobium meliloti*.
-*S.meliloti* is a multi-repliconic bacteria (has more than one chromosome), and therefore each of the replicons is treated as a separate dataset in this analysis.
+I have selection coefficient information for all genes in three different bacterial species: *Escherichia coli*, *Bacillus subtilis*, and *Sinorhizobium meliloti*.
+*S.meliloti* is a multi-repliconic bacteria (has more than one chromosome), and therefore each of the replicons is treated as a separate data set in this analysis.
 Each bacteria has selection information on about 2600 genes, which is far too much for any human to read and understand.
 I will be creating graphics to better visualize this data.
 
@@ -47,6 +47,14 @@ levels(all_data$bac) <- c("ecoli" = expression(paste(italic("E.coli"), " Chromos
                           "sinoC" = expression(paste(italic("S.meliloti"), " Chromosome")),
                           "pSymA" = expression(paste(italic("S.meliloti"), " pSymA")),
                           "pSymB" = expression(paste(italic("S.meliloti"), " pSymB")))
+#reodering levels by median omega
+#there is probably a better way to do this but I could not figure it out
+#I wanted something like this:
+#all_data$bac <- with(all_data, reorder(bac, value, FUN = median))
+omega_dat <- all_data[which(all_data$class == "omega"),]
+omega_dat$bac <- with(omega_dat, reorder(bac, value, FUN = median))
+bac_order <- rev(levels(omega_dat$bac))
+all_data$bac <- factor(all_data$bac, levels = bac_order)
 
 ```
 
@@ -95,6 +103,10 @@ This is where the box plots are particularly helpful, because it is easy to see 
 
 Since some of the selection values are very small (almost or close to zero) I decided to transform the y-axis to be on a log scale to allow for the distribution to be easier to see.
 
+I also decided to re-order the bacteria in the plot so that they went from highest median $\omega$ value to lowest.
+This way the data is in some sort of meaningful order and it is easy to compare which bacteria had the highest $\omega$ value.
+
+### Graph 2:
 ```{r g2}
 #plot
 strp_p <-(ggplot(all_data, aes(x=class, y=value, colour = class)) 
@@ -129,7 +141,7 @@ Some of these were mentioned above, that dS is usually > dN, and than $\omega$ i
 Another biologically relevant feature is that typically $\omega$ should be less than 1 for most genes.
 That is, most genes should not be under positive selection.
 In this graph it is easy to see that there are very few genes that are under positive selection, and majority of the genes have very small dN, dS and $\omega$ values, meaning that there are very few substitutions in the DNA.
-The median dots (dark blue) also help illustrate the above meantions trends: dS > dN, and $\omega$ < 1 for majority of the genes.
+The median dots (dark blue) also help illustrate the above mentions trends: dS > dN, and $\omega$ < 1 for majority of the genes.
 
 I also made this graph using a log scale (below) but I think the point that $\omega$ < 1 for most of the values is better illustrated without the log scale.
 Without the log scale the points are anchored at zero (which makes sense because you could have zero changes in the DNA and therefore $\omega$ = 0), and it is easy to see that the points are mostly below 0.5.
@@ -141,4 +153,4 @@ On the log scale, this is harder to see. But this may just be preference.
 )
 ```
 
-
+Obviously any of these graphs are preferable to reading a table with 2000+ lines.
