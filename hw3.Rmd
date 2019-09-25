@@ -18,8 +18,6 @@ library(lattice)
 
 Figure out:
 
-colouring
-
 log stuff
 
 order of bac?
@@ -76,10 +74,12 @@ vio_bar<-(ggplot(all_data, aes(x=class, y=value, fill=class))
         panel.grid.minor = element_line(colour = "grey98", size = 0.5),
         panel.spacing = unit(0.25, "lines"),
         axis.text=element_text(size=10)) 
-  + scale_color_manual(values=colours_arr)
+#  + scale_color_manual(values=colours_arr)
 #make the omega a math symbol in both the legend and x-axis
   + scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega))) 
+#log scale
   + scale_y_continuous(trans='log10', limits=c(NA,1))
+  + scale_fill_manual(values=c("#CFE7C8","#D2E4DC","#A0747A"), labels = c(" dN", " dS", expression(omega))) 
 )
 
 vio_bar
@@ -88,9 +88,9 @@ vio_bar
 
 The graph above shows violin plots of the data with box plots on top.
 This might be redundant information but I think it allows the distribution of data to be shown as well as some summary information that the box plot provides (quartiles, median..etc).
-I chose to use facet is that it is easy to compare the distribution of dN, dS, and \omega values between each of the bacterial replicons.
-Often in selection analysis, the \omega value is most important because it can give information about what kind of selection is acting upon a gene.
-I therefore chose lighter and similar colours for the dN and dS values and a bolder colour for the \omega value so it stands out and is the focal point of the graph.
+I chose to use facet is that it is easy to compare the distribution of dN, dS, and $\omega$ values between each of the bacterial replicons.
+Often in selection analysis, the $\omega$ value is most important because it can give information about what kind of selection is acting upon a gene.
+I therefore chose lighter and similar colours for the dN and dS values and a bolder colour for the $\omega$ value so it stands out and is the focal point of the graph.
 
 It is also common for dS to be larger than dN.
 This is where the box plots are particularly helpful, because it is easy to see that dS is larger than dN in all of the bacteria. 
@@ -130,8 +130,8 @@ strp_p + stat_summary(fun.y=median, geom="point", shape=18,
 
 This graph shows the same data but as a strip plot. 
 I like this version of the graph best because I think it is easier to show the distribution of the points and conveys biological properties clearly.
-Some of these were mentioned above, that dS is usually > dN, and than \omega is often the "most important" value to consider.
-Another biologically relevant feature is that typically \omega should be less than 1 for most genes.
+Some of these were mentioned above, that dS is usually > dN, and than $\omega$ is often the "most important" value to consider.
+Another biologically relevant feature is that typically $\omega$ should be less than 1 for most genes.
 That is, most genes should not be under positive selection.
-In this graph it is easy to see that there are very few genes that are under positive selection, and majority of the genes have very small dN, dS and \omega values, meaning that there are very few substitutions in the DNA.
-The median dots (dark blue) also help illustrate the above meantions trends: dS > dN, and \omega < 1 for majority of the genes.
+In this graph it is easy to see that there are very few genes that are under positive selection, and majority of the genes have very small dN, dS and $\omega$ values, meaning that there are very few substitutions in the DNA.
+The median dots (dark blue) also help illustrate the above meantions trends: dS > dN, and $\omega$ < 1 for majority of the genes.
