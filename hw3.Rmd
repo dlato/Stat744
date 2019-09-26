@@ -79,7 +79,7 @@ vio_bar<-(ggplot(all_data, aes(x=class, y=value, fill=class))
 #make the omega a math symbol in both the legend and x-axis
   + scale_x_discrete(breaks = c("dN", "dS", "omega"),labels = c("dN","dS", expression(omega))) 
 #log scale
-  + scale_y_continuous(trans='log10', limits=c(NA,1))
+  + scale_y_continuous(trans='log10')
   + scale_fill_manual(values=c("#CFE7C8","#D2E4DC","#A0747A"), labels = c(" dN", " dS", expression(omega))) 
 )
 
@@ -141,6 +141,10 @@ The median dots (dark blue) also help illustrate the above mentions trends: dS >
 I also made this graph using a log scale (below) but I think the point that $\omega$ < 1 for most of the values is better illustrated without the log scale.
 Without the log scale the points are anchored at zero (which makes sense because you could have zero changes in the DNA and therefore $\omega$ = 0), and it is easy to see that the points are mostly below 0.5.
 On the log scale, this is harder to see. But this may just be preference.
+
+One advantage of the strip plot in this case is that because it shows the actual points, you can tell where the violin plot may have been misleasing.
+For example, in the Chromosome of *S.meliloti* there are no points between 0.001 and 0.0001, this is clear in the strip plot.
+However, in the violin plot, because the smooth line of the plot extends from 0.001 to 0.0001, it apears as though there are points within that region.
 
 ```{r log scale}
 (strp_p 
