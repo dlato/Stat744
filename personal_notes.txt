@@ -104,3 +104,50 @@ https://serialmentor.com/dataviz/
 		- always keep in mind the biology and if it makes sense for you to have negative data...etc
 		- when showing how things range over 2 categories and they add up (like M anf F passengers = total passengers) you can plot the two side by side but have the total number as a "third" group (Fig 7.9 is really nice!)
 		- for several distributions, kernal density plots are better than histograms
+		- q-q plot is good bc we dont have to choose parameters like bin width and such like in histograms
+		- cumulitive distribution is good. so you rank the data and then plot the ranks, ie lowest score has the lowest rank and then we can see if it tapers at one end or if there is a spike
+		- its then super easy to see 25% of the students got this grade...etc
+		- if we have suer skewed data we can use power law distribution to see the tails better
+		- to check this you plot the decending cumulative distribution on a log scale (should see a straight line if it follows a power log)
+		- we use qq plots if we want to see how well a certain dataset follow a certain distrubution
+		- when they fall right on the straight line then we can assume that it follows the distribution
+	
+	Visualizing Many Distributions:
+		- we often want to think about our data in terms of response variable and groupings. where one is on one axis and the other is on the other axis
+		- ie temp is the response and would be on one axis and then the weather patterns or states would be the groupings, so we want to see how temp changes across the groupings
+		- STANDARD ERROR = how acurate our estimate of the mean (or median or whatever) is 
+		- STANDARD DEVIATION = how much spread there is in the data around the mean (or median or whatever)
+		- with violin plots you need to make sure that you have enough data points so that you can justify making a smooth line out of the data
+		- violin plots are good for determining if you have bimodal data or whatever, also have to be careful bc the violin plot can imply that there are points when really they are super sparse and the plot is just trying to make a straight line
+		- sina plot is when you have a violin plot with the dots on top
+		- with ridge line plots you want to have your groups on the yaxis and then the response variable on the x-axis
+		- with the violin plot and the ridge line plot, the point is not to show exact density but to make it easier to compair the distributions across the groups
+		- can also make the ridgeline plots into histograms, but its ugly
+		- ridgeline is good when you have like 100 items in your groupings
+		- ridgeline is good if you want to show two trends over time too
+	
+	Visualizing Proportions:
+		- always pick a dataset that hilights what YOU want to show
+		- can do proportions as side by side but then its hard to see how much they are represented in the total
+		- nice table of when you should use pie, stacked bar or bar!
+		- stacked bar it makes it hard to compare across groups (the colours in the bar) bc they are stacked
+		- so then side by side bars are better
+		- if you only have 2 categories of groups or colours, then stacked bars works great! super easy to see the trend
+		- can then also add a reference line like 50% to show when the two groups are equal or who is more than the other
+		- can use stacked densitys if you want to see how proportions change in response to a continuous variable (uses kernal density usually)
+		- ex: health status of ppl as a function of age, can see that overall health decreases with age
+		- but this has a limitation bc it can seem like one group has less or more than the others
+		- so to fix all this you can do stacked densities, or rather densitys ontop of eachother and separating the data into chunks, say by year or month or something (there is a really good example in Ch 10)
+		- can then also change this to be a proportion so that you can see how much of the total each group represents
+	
+	Visualizing Nested Proportions:
+		- this is when you data is broken down into multple sub categories, like state, age, weight..etc
+		- wrong to use pie charts when sometimes not all groups are represented across the data
+		- hard to see overlap when you are dealing with proportions in a pie or bar graph
+		- for these cases a mosaic plot is best bc it shows how the categories are related (really nice example in ch 11)
+		- mosaic plots have different points of emphasis depending on what you want to show
+		- again, comparison across groups is hard to see with mosaic plots
+		- nested pie charts are possible but...ugly
+		- so if you have to do a pie chart you should do a temporal gouping in a colour, and then another grouping (like building material) in hues of that colour, that way you can see that it is nested and you get an accurate representation of the data, it is clearer, but still not great in my opinion
+		- can also use a tree map, but again, I think is is confusing if it is not in a phylogenetic context, also called a paralled sets plot (looks like  tree)
+		- again, it is important to play up cultural norms, like reading from left to right and colour patterns...etc, can easly turn an ugly graph into a good one
