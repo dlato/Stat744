@@ -179,4 +179,115 @@ Sep 20, 2019: Exploratory Graphics:
 		-library "sos" is good for trying to find a command or package or something like that. see lectre notes
 		-geom_path puts the points in the order they were in the dataset, where as genom_line assumes you x axis is the predictor variable, so you have to order your points based on the x and y var (so genotype data first, and then environment in the lecture notes)
 		-group =1 means that you can do points in diff colours of your groups, and then put a smooth genom line over all the groups if group =1 
-		-
+	
+Oct 1, 2019: Inferential Graphics
+	- really important that you are not snooping with your data!
+	- what is my model telling me and how should I tell other ppl about this
+	- graphs tell stories better than tables do
+	- use graphs to illustrate comparisons
+	- think consciously about what you units are
+	- distinguish btwn scientific and statistical variables 
+	- pvalues have a place but there might be better ways to say things
+	- its good tobe able to show ppl the data so they can come to the same conclusions as you
+	- back to the smoking data
+	- danger of fitting a spline model, you can try to find one that give best separation btwn your categories (smoking v non smoking) but then should you be using this model to then do stats on it?
+	- this is snooping! and we dont want that! bc then we are not statistically sound
+	- before we do any stats we want to make sure that we are protecting against wrong answers, if you have lots of data then you are bound to find something that is sig bc of just the nature of chance
+	- so the garden of forking paths is when if you immediatly start looking at your data and then deciding what tests or models you should do, this is inherant snooping, even if you dont mean to
+	- and sometime using the models that everyone else does are not always the best things for you to do
+	- so in this case, you can hide a certain predictor (smoking), so pick a model for age based only on the age data, so always check residuals of data so you can see whats going on and if it is good
+	- so we can look at the units of all these regression coefs and then see if they make sense
+	- so remember that your regression coefs have units! liters (in lung capacity) per unit per year, for lung vol v.s. age, or L per unit per inch, for lung vol v.s. height
+	- and in the graph they are all on the same graph which is bad
+	- and this makes it look like sex is most important factor, but really sex is only more important per inch or per year...etc
+	- so you can scale the variables or scale the coefficents so that they are all the same units and then put them on the same scale
+	- so we want to multiply the coef by the width, which then gets rid of the units, DW plot is the default to scale quantative coefficents by twice the SD
+	- now we have a good pic and units are all the same
+	- and we can see that height is the most important predictor in lung capacity, and its easy to see!
+	- so in a biological context we know that smoking has some sort of effect on lung capacity, and we care if this graph includes zero bc we could have negative or positive values, which is very often what we want to know
+	- so seeing that it inclues zero does not mean that there is not no association
+	- so we know smoking is not sig bc we cant tell if it is zero or positive or negative
+	- we are using 2 SDs bc then we are not assuming normal distribution with 1.96, or T test...etc
+	- coefficent plots where we know the units is a nice way to compare things
+	- can get rid of units by scaling the values so these go away, how???
+	- so with these graphs the p-values would be low if they are farther away from zero...I think
+	- we have been comparing different predictors with the same response variables
+	- easest way to standardize is to do it before you fit the model and divide by SD or SE
+	- on a log scale can also help to put the values on the same scale
+	
+	Shape of responses:
+		- when things get noisier it is hard to decide how to best present the data
+		- if we see there is a positive relationship, or negative or whatever, we want to be able to show that something is sig or not
+		- prediction intervals = where you points are likely to be
+		- confidence intervals = if you had more data than what you have, this is how sure we are that things should lie within the CI
+		- if you ignore the variance at the intercept then you can get CIs for the response (weird cross graph)
+		- so the weird cross thing means that the slope could fall anywhere within those regions and we therefore can not say that we are super confident that this is sig!!!
+		- so when we put the curves on top of that we can now see that to get the CI curvy ones we see that they take into account for the intercept
+		- bc we are on a standard deviation scale thats why it comes out like a cross when we look at the slope CI
+		- coefficent plot is most useful when each vriable corresponds to a single statisticl parameter
+		- this happens when we have:
+			- categorical variable that is binary
+			- can assume that we can have a linear predictor and something about a link scale
+		- so often we dont worry about the difference btwn scientific vars and stats vars
+		- problem comes when we have more than 2 categories (not binary)
+		- or if we have a response that is not linear (like lung capacity and age)
+		- effects package and ammeans packages that can help with deciding what to do when you want to associate them
+		- lots of graphs: supressing variance at the intercept (like before) and we see that there are many different parameters
+		- so in this case we would need some sort of overall pval bc there is just no way we could look at this and say what pairs look good or not
+		- cant just look at any of the standard pvalues, you are looking at it as a variable, so just religion, country...etc but not distinguishing btwn christian or muslum. so not within the variable
+		- link scale is where everything is linear
+		- almost always be doing things on link scale for calcilations and for graphing
+		- then the original scale for other things
+		- for actual data do it on the logit scale?
+		- response scale is a probability 
+	
+	Oct 4, 2019
+		- NEVER have + = sig and - = not sig!! in a table
+		- also dont put sig or non sig as bold or starred
+		- its bc its really hard to tell the difference btwn large effect with small uncertanty, or small effect small uncertanty...etc
+		- so it is almost always better to put it in a graph so you can see it clearly in a coefficent plot
+		- with coeff plots we are usually dropping the intercept bc usually we dont care about how specific that is
+		- like we dont care about mpg on a car with 0 cylynders and 0 displacement..etc, the intercept is a really specific point
+		- and from a graphical point of view it often messes with the scale of the graph ( things just wouldnt fit)
+		- adding a vertical line with an x intercept of zero, as a reference, so that it is easy to be able to see that things are sig or not
+		- can also plot multiple models on the same graph which is hepful sometimes
+		- talking about dotwhisker in all the above. this is for creating coeff plots
+		- broom package is what pulls out the info we want from the model data (so the coeffs) and then dotwiskers uses it
+		- can also just take this out ourselves with broom and then plot it as we like
+		- stargazer is a pacakge that will output a nice table for ppl that want the coeff table with * for sig and whatever
+		- standard errors are in () and *'s are the pvals, can also produce latex output!!!!!!
+		- so again, for a coeff to be sig, we need it and its SEs (or SDs) to be far away from the zero line, NONOVERLAPPING
+		- smart way to scale things is to look at SE of the coeffs and then scale, dumb way is to re-scale your data and then re-do your model whould give you the same outcome but the second way takes longer, bc re-fitting the model takes longer
+		- the first thing (look at SE and then scale) is what dotwiskers does
+		- rescale does the second one, which if you have lots of data and model took a long time, you dont want to scale again
+		- so the first way is adjusting the coefficents (scaling them) the second way is scaling the DATA multiple times every time you want to change the scales (the units...etc)
+		- if you do want to scale your data, it should be if you are doing something that is simple and not computationally intensive (this happens when you scales say are super super large and then you have numerically issues if you scale the coefs and not the data)
+		- if you are doing lin alge, scale data. bc it could fuck up you stuff
+		- so when we dont scale, we see that things are not on the same units, or in unintuitive units, and bc our age range is high, we dont really expect the use of contraception per age to change all that much per year per person. so thats why these got super small when we dont scale
+		- when you apply scale to a veriable it attaches the old mean and SD so that when you keep doing calcs later, so you should change the matrix output into a vector so that it saves this and does not make you crazy
+		- when you use broom and tidy you get a nice tibble of al the info layed out super nicely for you
+		- so you can fit different models on the same graph and then compare the coefs from the different models right on the same plot!
+		- it automatically dodges!
+		- or say if you wanted to drop a predictor and see how it changes the other predictors then its also useful
+		- it is also again important to change you legend so that the order of your points are in the same order on the vertical axis, so if you have your data with mostly blue points on top, and orange on bottom, then your legend should also refelct this and be orderd in that way so that it is easier for ppl to see and make connections
+		- map() is basically a cleaner replacement for lapply, but this is all in tidy
+		- so you can also tell it to do another something like calculate coefs for each thing in the list while you also do something else with the list
+		- then you have two dataframes from this map + tidy, and then you want to stick them together with bind_rows(), and you can add a col with a .id inside bind_rows, so you can see what model all those calculations came from (which is used for colouring in plots)
+		- unique(term) is to stop it from rearranging alphabetically
+		- can also again choose to re-order the terms so that they are from highest to lowest, or order them by effect on the x-axis, again so that ppl can see things more clearly and see what has the most effect or not
+		- %+% takes an existing plot but re-draws it for a new data set without changing anything!!!! so helpful!!
+		- bc these plots are very horizontal, you can always squash them so that you can make it "prettier" and taking up less white space
+		- broom package that handels lots of diff models
+		- broom.mixed that hangles more mixed models (lime4, mcmcglm, hlime...etc), BUT you need to make sure you load broom.mixed so that it grabs the right packages
+	
+	Why Graphs instead of Tables:
+		- big tables are hard for ppl AND computers to read! 
+		- tabularizer will automatically grab tables from a pdf! super cool. can be problematic sometimes
+		- it also has an interactive option where you can select/hilight manually which parts you want it to look at and grab, which apparently works slightly better
+		- expand.grid() gives all the combos of different variables (paiwise?)
+		- this has its own ordering, so you have to re-order to be what you want
+		- R uses regex and if you want an actual backslash you need to do \\, escape the backslash
+		- this package is nice, but again you need to spend some time like always, re-shaping your data so it is in a format that you can use in ggplot or whatever
+		- tidy has a nice way that you can add in stuff say about the col names, in a nice neat way so that others can see it, can put this in a separate file or you can put it in your code but again, when you do anyting manually it should be OBVIOUS so that ppl can tell and wont accidentally read your code badly
+		- geom smooth makes the ribbons look nice
+		- if you dont use this, like in his ex in class, then you have to specify all of this in the code
