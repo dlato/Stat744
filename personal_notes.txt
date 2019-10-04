@@ -151,3 +151,28 @@ https://serialmentor.com/dataviz/
 		- so if you have to do a pie chart you should do a temporal gouping in a colour, and then another grouping (like building material) in hues of that colour, that way you can see that it is nested and you get an accurate representation of the data, it is clearer, but still not great in my opinion
 		- can also use a tree map, but again, I think is is confusing if it is not in a phylogenetic context, also called a paralled sets plot (looks like  tree)
 		- again, it is important to play up cultural norms, like reading from left to right and colour patterns...etc, can easly turn an ugly graph into a good one
+	
+	Visualizing Associations Among 2 or more quantative variables:
+		-quantative variables like height, weight...etc
+		-may be interested in how they are related to eachother
+		-based on how many dimensions of these we have, we might want to pick different charts to show this
+		-simple scatter plot of 2 of these with one on the x and one on the y. when we say this we say we are plotting y against x
+		-can then colour the dots by categorical variables like sex or treatment, and this could give insight into how this catgorical variable may be influencing things, like all the male birds tend to be bigger..etc
+		-can use a bubble chart to show a third dimension of our quantative variables by letting the dots be different based on categories of one of the quantative variables, so you will have bubbles of different size but still will be showing how 2 other quantative variable are related to eachother (x and y)
+		-but bubble charts are hard to distinguish btwn the bubble charts sometimes bc it is hard to see that some bubbles are larger than others (going back to fundamental principals)
+		-so an alternative is making an all-v-all matrix of scatter plots, where you compair all your quantative variables to eachother, then it is a bit easier to see how M/F or Treatment or other categorical variables are maybe separated or not in each of those variables
+		Correllelogram:
+			- this is for when you have more than 3-4 quantatative variables, and an all-v-all matrix will just not work
+			- can calculated correlation coefficents which range from -1 to 1 and then we can see if they are correlated (positive) or anticorrelated (negative)
+			- really nice pic to show how different values of coefs look
+			- really nice overview on what the formula for the coefs mean and how to interpret it
+			- can then make a correllologram that I think looks kind of like a heat map, with all the info about the strong correltaiton or not in both + and - directions
+			- super nice way to show like 20+ correlations all at once
+			- can even further improve this by making bubbles to show that the |bigger| correlations are bigger and ones near zero are smaller, makes it visually easier to see the trends
+			- remember that these graphs are abstract and it is always better to visualize raw data if we can!
+		Dimension Reduction:
+			- PCA is useful when we are trying to reduce dimensions
+			- PCA basically makes the mean and variance zero and puts the data in a linear combo
+			- when you do a PCA you are usually interested in 2 things:
+				1) the composition of the PCs
+				2) how individual datapoints are arranged in the principal component space
