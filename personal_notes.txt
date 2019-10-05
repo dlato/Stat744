@@ -176,3 +176,145 @@ https://serialmentor.com/dataviz/
 			- when you do a PCA you are usually interested in 2 things:
 				1) the composition of the PCs
 				2) how individual datapoints are arranged in the principal component space
+			- it is usually useful to put arrows attached to each of your variables to see how much they are contributing to the PCs (I find this WAY better than the clustering PCA plot!)
+			- lines that are almost vertical or horizontal are mostly contributing to the PC that is on that axis. and not the other
+			- length of the arrow indicates how much it contributes to those PCs you are looking at. so shorter arrow for PC1 v PC2 would mean that that variable is contributing more to higher order PCs
+			- good ex of how you would interpret the PCAs when they are clustered on the graph
+		
+		Paired Data:
+			- talking about measuring the same variable over diff times, or lengths of a person right and left arm
+			- same quantity, slightly different conditions
+			- and we can therefore assume that the pairs will be more similar than the value between pairs
+			- scatter plot with a line is one way to show this bc you can see if pts are close or far from the line then the pairs are similar, if not then pairs are not similar. make sure you are plotting the one condition value on one axis and the other condition value on the other axis
+			- if we have a small number of comparisons, then we could do a slopegraph, where each condition is a vertical lines of the points and we connect the points to get a slope change btwn the conditions
+			- this is good when we have > 2 conditions
+	
+	Visualizing time series and other functions of independent variable:
+		-time imposes additional structure to the data that is important to think about
+		- bc it gives them inherant order
+		- line graphs excentuate the order of time bc you follow the points and see that each point has a left and right neighbour so a perdecessor and a future generation
+		- some say that the lines are misleading bc it does not represent actual data points, so you should mention in your fig, "lines are meant as a guide to the eye"
+		- no dots = emphasis on overall trend
+		- colouring in the area is also fine, as long as area actually means area (counts)
+		- with multiple time series over differen say doses, you need to be careful bc it can get busy
+		- so point an line is helpful 
+		- can also use line plots whenever the data has a natural order, low fertalizer to high...etc
+		- make sure that the order is always on the x-axis
+		- sometimes we have more than one response over the same time period, in this case you can put the graphs ontop of eachother to show patters over time in both the responses
+		- can also plot the two variables against eachother in a connected scatter plot
+		- also called a phase portrate
+		- it shows how things line up for different phases and when they are "in synch" or "out of synch"
+		- if you do this you NEED to indicate direction and temporal scale so that ppl can tell what the heck is going on. so making the line go from light to dark or something is helpful way to draw the viewers eye around the line
+		- or you can draw arrows on the path
+		- readers are more likely to confuse order and direction in a connected scatter plot than in line graphs (probs bc of cultural things that we are just not used to seeing it)
+		- an easier way to use connected scatter graphs is if you reduce the dimensions first, so plotting the same thing on PC graph will make the trend more clear and you can then colour coat to show which section sof the cycle viewers are looking at
+		- but again, then you are relying on interpretation of the PCs to help explain what is going on
+	
+	Visualizing trends:
+		- we can do this by smoothing the data (by say calculating a moving average) or we can fit a cure/model
+
+		Smoothing:
+		- so most of the time we have smaller fluctuations in our trend that we almost want to blur out and focus on the big picture overarching trends
+		- can use a sliding window to calculate averages and plot those for various windiw sizes
+		- usually its better to use the center of the window to calculate the average so that you do not have a lag in time, could also calculate the average at the end of the window but then you will get a bigger lag
+		- regardless, it is easier to point out the trend
+		- limitations: gaps bc of window creating lag, might not be that smooth, have to pick the right window size
+		- stats has developed curves that weight the points closer to the center of the window more so that it removes a lot of bumps in the line! brilliant!
+		- called locally estimated scatterplot smoothing (LOESS)
+		- so this is basically fitting low degree polynomials within each window so that the data is extra smoothed and weighted
+		- these again can be tuned by adjusting parameters
+		- LOESS's can be applied to things other than time series!
+		- these are often nice bc they "look nice to the human eye", so it is easier to believe and interpret
+		- spline is another thing you can use, highly flexible but always looks smooth
+		- haha and choice of spline can REALLY change you data! so be careful!
+		- *** be carfeful when interpreting results from a smooth! same data can be smoothed in different ways! **
+		- probs best to do some stats test to make sure the trend you see is real and then do a smooth
+		
+		Modeling:
+		- preferable to fit a curve compared to just smoothing, bc with that you have CIs and can make more valid interpretations
+		- if we need to guess what model to fit, we can always plot multiple on the same graph and then assess
+		- can also change the axis to log and then fit stuff to see how that looks, and in the example (fig 14.9) we see that the linear fit "fits" the data much better than the exponential fit (had to put this on the log scale so we could see both linear and exp as lines and then assess)
+		- so avoid exp and use linear fits on log scale!!
+		- better to fit a straight line to transformed data adn to fir a nonlinear curv to untransformed data
+		- commonly called log-linear
+		- or can also do log-log
+		- basically its easier for us to look at lines than curves, so play up to this and transform your data
+		
+		Detrending and time-series decomposition
+		- can also use detrending to hilight specific deviations
+		- so if over many categories they are all subject to the same trend, like housing prices increase over time with inflation, or sunflowers get taller with age, we can then divide the data by the increases over each category to make the whole graph horizontal, then it is way easier to see how other things like a recession can cause housing booms and busts
+		- point of this section is to deal with noise that can cause the trend to fluctuate, unqual external events (ie distinct housing bubbles), or cyclical variations (ie gets cold at night and hottest during mid day...almost always)
+		- can smooth these fluctuations by another smoothign thing called seasonal decomposition of time series by LOESS, but there are other methods that do the same thing
+		- helps us see the long term trend that we could miss when there are fluctuations bc of noise, cycles, or other external factors acting on all data pts
+		- can also plot the remainder, which is difference btwn actual and smoothed average (or whatever) to help show how you got the data
+
+	Visualizing geospatial data:
+		Projections:
+		- when we need to put the spear that is the earth onto a 2D map, we have to make some decisions about how we project this, which can impact how things look
+		- projection can preserve angles or areas, but not both. so we much choose
+		- conformal conserves shapes and angles, but not area, and causes distortions in area, espically near the poles
+		- if you need to accuratly represent area, then consider the goode homolosine projection, on a global scale
+		- most common map we see of the US + alaska and hawaii is often bad bc alaska is often scaled down and hawaii is often scaled up so area is NOT conserved.
+		 - so we should move alaska and hawaii without changing their scales so that the fig is not misleasing
+		 - we can often split the maps up into layers to hilight differen things, roads, hills, terraine
+		 - it is imporatant to use a compas or scales to clearly show what you are showing
+		 - scale bar is important! and choosing which layer is dependent on what you want to show and if that is adding anything or making it more distracting
+		 - we can therefore also apply the pretty plot properties to maps, and plot points in the region and group them by colours based on other variables
+		 - choropleth maps use colour to show densities of a variable
+		 - again, choose colours to hilight what you want to hilight
+		 - light coloured backgroud usually works better, so put what you want to hilight in dark
+		 - we are not very good at taking a colour and matching it against a continuous scale. so binning the data is often better
+		 - 4-6 bins is usually good!
+		 - often better to split up the states into regions and plot your data bc if something is larder it can me misleasing to say that the WHOLE state has the value, when really its only certain regions of that state that have the value (figs 15.13 and 15.14)
+		 - cartogram is used when the area can be misleading bc you could have one state take up a lot of room, but be really sparsly populated
+		 - it basically deforms the area so that we can see which ones are bigger or smaller based on the actual value
+		 - oooo really nice way to solve the area issue, you can make them all the same size and into little squares and the colour them by mean, that way it is not misleading that larger states draw you eye and mean they are more important
+		 - can use the same concept but instead of coloured squares, make them into graphs! (cool fig 15.17)
+		 - easy to see here that neighbouring states have similar patterns
+	
+	Visualizing uncertainty:
+		- error bars and confidence bands are most popular
+		- error bars are good for showing uncertanty of many different parameter estimates in a single graph
+		- usually tradeoff btwn accuracy and less busy visual display
+		- showing probability as a dot and a line does not help us see how it can be translated to a tangable thing
+		- can use the number of coloured in squares to show what the chances of seeing something are (really nice fig 16.1)
+		- this makes it clear which gives us the best chances
+		- this is called frequency framing
+		- but this is only good if we have binary outcome (coin toss)
+		- humans are better at preceiving, counting and jusging relative frequencies of discrete objects (as long as they are not too large) then judging the relative sizes of different areas. so the counting the number of squares is more effective
+		- we can combine the accuracy of the distrubution with putting areas of circles to fill in the area under the curve, then we are counting and can distinguish things better
+		- better to use a small number of dots so we can calculate
+		- often it is worth while to trade precision for human perception
+		- this is especially important when talking to lay audience
+		- mostly with stats we are taking a subset of the total data and trying to make inferences about all of it, we do this by estimation
+		- standard deviation = how our points vary (actual data)
+		- standard error = how our estimate varies (so mean, or model fit...etc), how well did we do with our estimate
+		- depending on how you are defining your bars, can really change how things look and can mess up what you are trying to show, potentially
+		- always specify what your error bars represent so that you are not confusing ppl
+		- really nice graph kind of showing when you would use the different bars fig 16.6
+		- so data can have similar distribution, but if you have fewer data pts then you SE bars will really vary btwn your samples
+		- graded error bars are when you show the multiple CIs on the same point, so the viewer can tell that there are a range of possibilities
+		- often we struggle with ppl thinking that the range of the estimate or data stops at the error bars, which is wrong, so minimizing this deterministic construal errors is importnat
+		- again, to show sig, you calculate the CIs and if they DO NOT include zero (can be + or -) then they are sig
+		- 16.9 fig is really nice to show the different ways you can show sig with different looking error bars to show whatever point you want
+		- baysian credible interval tells us where the true parameter likely is not
+		- bayesian deals with the true parameter value and if that is right, where as frequentist is about rejecting a null
+		- bayesian = thinking about magnitude of effect
+		- frequentist = if the effect exists or not
+		- also show ways to show the credible interval
+
+		Visualizing undertanty of curve fits:
+		- confidence bands around straight line estimates of trends are curved bc we are basically fitting a bunch of tiny lines and then just plotting the area btween all of them (fig 16.16 is nice)
+		- again, we can draw multiple confidence bands on one graph to show how it variessd depending on what level you choose
+		- can also do this for non-linear curves
+		
+		Hypothetical outcome plot:
+		- make a moving pic and cycle through multiple plots of different, but equally likely scenarios
+		- so you basically pic a random sample that would give you a hypothetical outcome, and do this a few times and then we can hopefully see a trend
+		- so in this case if we randomly piced Canada v US chocolate, 53% of the time the Canada ones would taste better, and we see this in the annimation that usually canada is larger than US about 1/2 the time
+		- good for oral presentations when you can have a moving pic, less effective as a searies of plots
+		- super cool with cycling through trendlines to show the different lines that would make up a CI band
+		- choosing to gradually show your change or do a hard switch is preference 
+		- but when you do this, you need to make sure that your representatives are true of the distribution and not an artifact of sampling.
+		- so you either sample a lot, or say that some are misleading, or just state the probability at the end
+
