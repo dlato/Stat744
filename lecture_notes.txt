@@ -291,3 +291,40 @@ Oct 1, 2019: Inferential Graphics
 		- tidy has a nice way that you can add in stuff say about the col names, in a nice neat way so that others can see it, can put this in a separate file or you can put it in your code but again, when you do anyting manually it should be OBVIOUS so that ppl can tell and wont accidentally read your code badly
 		- geom smooth makes the ribbons look nice
 		- if you dont use this, like in his ex in class, then you have to specify all of this in the code
+
+Oct 8, 2019:
+	- another reason for why you would do something ordered in alphabetical, is this bc you want to use the graph as a lookup table so ppl can look up values for a certain thing? then alphabetical is fine. otherwise, you should think about the order
+	- label_parsed is for doing fancy greek letters and other things, probs helpful with my italics
+	- should always cange the facet names so they look pretty and are convenient that they are easier to read
+	- Hmisc is a package so that you can add lables and units to variables, BUT it can not work with ggplot :(
+	
+	Infoviz vs Dataviz:
+		- dataviz = how to convey lots of info efficently and honestly, accuate data
+		- infoviz = how do we make it catchy, discovery of how big and interesting it is an explore that graphically
+		- so I think with infoviz they really want to tell a cool story, even though it may not be totally correct, like the lecture graph about spending and health care and the two that have universal health care are not really that great, so story could be we dont need universal healthcare, but it ignores that you have less datapts for that.
+		- say that infoviz is more about recognizing patterns, its more for big datasets with lots of dimensions and you can explore lots
+		- dataviz is more about the accuracy of the graph and being able to see values, or extract more info about the datapts
+		- dataviz = how well they can communicate auantitative data
+		- infoviz is said to be more art
+		- lots of discussion about this, and lots of ppl have different opinions and they could vary well be merged
+		- so for most of this course and this science, we are thinking as dataviz bc we are often talking to a specific audience who already understands, so we really are dealing with ppl that care about the data
+		- infoviz = graphic designers
+		- dataviz = stats and science (usually)
+		- we often want our visualizations to be:
+			-accurate
+			-memorable
+			-attractive
+		-and we can measure this in certain ways:
+			-memorability tests
+			-quality scores
+			-eye-tracking experiments
+		- bateman: did actual experiments and did cleaveland like tests to these two graphics, one that is very much more "art" and one that is more of a classic graph, and they said that really ppl were not that much worse when it was art, and they remembered it much better
+		- data redundancy is when you have a bar but also lable the exact hight of the bar
+		- message redundancy is when you do the same thing but with the categorical variables
+		- objectively measuring peoples subjective opinions
+		- eye-tracking experiment: least recognizable graphs ppl are already looking all over the place, reading the title..etc. when graphs are recognazible, ppl are able to focus on the center and less looking around. conclude that there is a medium correlation with what you see in the first 10sec vs having longer, redundancy is not bad, titles and labels are important, using recognizable symbols (dinos instead of just dots) helps people connect
+		- so having your graphs be reproducable is good bc it means that you can get a new graph with data, but if you are doing infoviz then you are creating art then you cant really put a code to it and therefore you shouldnt have to have a pre-discribed way of creating "art"
+	
+	Dynamic Graphics:
+		- need to think about how someone will actually interact with your graph, will they print it or make it into a pdf that is not dynamic any more?
+		- 
