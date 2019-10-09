@@ -1,0 +1,128 @@
+---
+title: "Stats744: HW4"
+output: pdf_document
+fontsize: 12pt
+header-includes: \usepackage{xspace, longtable, booktabs}
+---
+
+```{r setup, include=FALSE}
+library(dotwhisker)
+library(broom)
+library(dplyr)
+library(tidyverse)
+library(sjPlot)
+library(sjlabelled)
+library(sjmisc)
+library(ggplot2)
+```
+
+
+\newcommand{\smel}{\textit{S.\,meliloti}\xspace}
+\newcommand{\bass}{\textit{B.\,subtilis}\xspace}
+\newcommand{\ecol}{\textit{E.\,coli}\xspace}
+\newcommand{\strep}{\textit{Streptomyces}\xspace}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
+
+
+
+## Illustrating Statistical Inference
+
+### Data:
+
+As part of my thesis I have information about substitutions and their variation across four bacterial genomes: \ecol, \bass, \strep, and \smel.
+The bacteria \smel
+is a multi-repliconic bacteria and therefore each of it's replicons is analized separatly. 
+The data is binary, stating at each site in the genome if there is a substitution, or there is not.
+This was also broken down into protein coding and non-protein coding sections of the genome.
+I previously fit a logistic regression to the data and obtained a table with the following results:
+
+
+\begin{table}[h]
+	\centering
+		\begin{tabular}{lcccc}
+			\toprule
+			Bacteria and Replicon & Coefficent Estimate & Standard Error & z-value & P($>$|z|)\\
+			\midrule
+			\ecol Chromosome &  -4.308\e{-8} & 2.584\e{-9} & -16.67 & $<$2\e{-16} \\
+			\bass Chromosome &  -4.971\e{-8} & 4.268\e{-9} & -11.65 & $<$2\e{-16} \\
+			\strep Chromosome & 1.989\e{-8} & 8.696\e{-10} & 57.37 & $<$2\e{-16}\\
+			\smel Chromosome &  -1.903\e{-7} &  2.13\e{-8} & -8.934 & $<$2\e{-16} \\
+			\smel pSymA &  -6.642\e{-7} & 2.801\e{-8} & -23.71 & $<$2\e{-16} \\
+			\smel pSymB & 1.769\e{-7} & 2.33\e{-8} & 7.593 & 3.11\e{-14}\\
+			\bottomrule
+		\end{tabular}
+\end{table}
+
+
+\begin{table}[h]
+	\centering
+		\begin{tabular}{lcccc}
+			\toprule
+			Bacteria and Replicon & Coefficent Estimate & Standard Error & z-value & P\\
+			\midrule
+			 \ecol Chromosome &  9.896\e{-9} & 7.159\e{-9} & 1.382 & 0.167 \\
+			 \bass Chromosome &  -1.055\e{-7} & 1.25\e{-8} & -8.436 & $<$2\e{-16}  \\
+			 \strep Chromosome & 1.635\e{-7} & 2.893\e{-9} & 56.5 & $<$2\e{-16}\\
+			 \smel Chromosome & -2.900\e{-7} & 3.852\e{-8} &  -7.527 & 5.18\e{-14} \\
+			 \smel pSymA &  -1.263\e{-6} & 5.595\e{-8} & -22.57 & $<$2\e{-16} \\
+			 \smel pSymB & 4.771\e{-7} & 5.314\e{-8} & 8.978 & $<$2\e{-16}  \\
+			\bottomrule
+		\end{tabular}
+\end{table}
+
+
+Read in the data and format: (I have over 160 million lines of data so it was just not feisable to run the logistic regressions. So I manually added the output from the logistic regression results)
+```{r}
+subs_dat <- read.table(header=TRUE,check.names=FALSE,text="
+model bac cod_class term  estimate  std.err statistic p.value 
+logit ecoli 1 pos -0.00000004308 0.000000002584  -16.67 0.0000000000000002
+logit ecoli 0 pos 0.000000009896  0.000000007159  1.382 0.167
+logit bass  1 pos -0.00000004971  0.000000004268  -11.65  0.0000000000000002
+logit bass  0 pos -0.0000001055 0.0000000125  -8.436  0.0000000000000002
+logit strep  1 pos 0.00000001989 0.0000000008696 57.37 0.0000000000000002
+logit strep 0 pos 0.0000001635  0.000000002893  56.5  0.0000000000000002
+logit schrom  1 pos -0.0000001903 0.0000000213  -8.934  0.0000000000000002
+logit schrom  0 pos -0.0000002900 0.00000003852 -7.527  0.0000000000000518
+logit pa  1 pos  -0.0000006642  0.00000002801 -23.71  0.0000000000000002
+logit pa  0 pos -0.000001263  0.00000005595 -22.57  0.0000000000000002
+logit pb  1 pos 0.0000001769  0.0000000233  7.593 0.0000000000000311
+logit pb  0 pos 0.0000004771  0.00000005314 8.978 0.0000000000000002
+
+")
+
+#separated this into coding
+subs_dat_cod <- read.table(header=TRUE,check.names=FALSE,text="
+term  estimate  std.err statistic p.value 
+ecoli -0.00000004308 0.000000002584  -16.67 0.0000000000000002
+bass -0.00000004971  0.000000004268  -11.65  0.0000000000000002
+strep 0.00000001989 0.0000000008696 57.37 0.0000000000000002
+schrom -0.0000001903 0.0000000213  -8.934  0.0000000000000002
+pa  -0.0000006642  0.00000002801 -23.71  0.0000000000000002
+pb 0.0000001769  0.0000000233  7.593 0.0000000000000311
+
+")
+
+#separated this into non coding
+subs_dat_noncod <- read.table(header=TRUE,check.names=FALSE,text="
+term  estimate  std.err statistic p.value 
+ecoli 0.000000009896  0.000000007159  1.382 0.167
+bass -0.0000001055 0.0000000125  -8.436  0.0000000000000002
+strep 0.0000001635  0.000000002893  56.5  0.0000000000000002
+schrom -0.0000002900 0.00000003852 -7.527  0.0000000000000518
+pa -0.000001263  0.00000005595 -22.57  0.0000000000000002
+pb 0.0000004771  0.00000005314 8.978 0.0000000000000002
+
+")
+
+```
+
+### Graphs
+```{r}
+#why does this have NA on the x-axis??? is it because things are too small??
+dotwisk <- dwplot(subs_dat_noncod)
+print(dotwisk)
+#my other failed attempt
+#plot_model(subs_dat_noncod)
+
+```
+
