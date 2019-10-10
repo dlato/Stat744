@@ -26,6 +26,10 @@ theme_set(theme_bw() + theme(strip.background =element_rect(fill="#e7e5e2")) +
                   axis.text=element_text(size=10),
                   legend.position="top") 
           )
+
+#prevent overflow of code boxes
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 ```
 
 
@@ -53,6 +57,8 @@ I previously fit a logistic regression to the data and obtained a table with the
 	\centering
 		\begin{tabular}{lcccc}
 			\toprule
+			\multicolumn{5}{c}{Protein Coding} \\
+			\midrule
 			Bacteria and Replicon & Coefficent Estimate & Standard Error & z-value & P($>$|z|)\\
 			\midrule
 			\ecol Chromosome &  -4.308\e{-8} & 2.584\e{-9} & -16.67 & $<$2\e{-16} \\
@@ -70,6 +76,8 @@ I previously fit a logistic regression to the data and obtained a table with the
 	\centering
 		\begin{tabular}{lcccc}
 			\toprule
+			\multicolumn{5}{c}{Non-Protein Coding} \\
+			\midrule
 			Bacteria and Replicon & Coefficent Estimate & Standard Error & z-value & P\\
 			\midrule
 			 \ecol Chromosome &  9.896\e{-9} & 7.159\e{-9} & 1.382 & 0.167 \\
@@ -87,7 +95,7 @@ Read in the data and format: (I have over 160 million lines of data so it was ju
 
 I think I may have cheated a bit, but I made each bacteria a "term" even though they were not actually "terms" in the model.
 Each logistic regression model was run separatly on both the protein coding and non-protein coding sections of each bacterial replicon.
-```{r}
+```{r, data_read}
 subs_dat <- read.table(header=TRUE,check.names=FALSE,text="
 term model  estimate  std.error statistic p.value 
 ecoli 1 -0.00000004308 0.000000002584  -16.67 0.0000000000000002
@@ -107,7 +115,7 @@ pb  0 0.0000004771  0.00000005314 8.978 0.0000000000000002
 ```
 
 ### Graph
-```{r}
+```{r, graph, linewidth=60}
 dwplot(size = 3, subs_dat) %>%
   relabel_predictors(ecoli = "E.coli",
                           bass = "B. subtilis",
@@ -124,16 +132,43 @@ dwplot(size = 3, subs_dat) %>%
 ```
 
 
-### Discussion
+### Discussion of Graph
+In this graphic the coefficent estimates for each logistic regression are plotted.
+I have added in a reference line at zero to assist with determining statistical significance. 
+Typically, any coefficent estimates (and their respective standard errors) that cross over the zero reference line are not considered significant.
+In this plot, it is clear that the only estimate that is not significant is the non-protein coding regions of \ecol. 
+In the protein coding regions of \strep
+, the coefficent estimate is very close to the zero reference line, but does not touch it, and is therefore significant.
 
+It is also very easy to see which bacterial replicons have a positive or negative coefficent estimate. 
+pSymB of \smel 
+and \strep 
+are the only replicons to have a significant positive coefficent estimate, while the rest of the bacterial replicons have a significant negative coefficent estimate.
+
+### Discussion on Biological Relevance
+If the coefficent estimate is significantly positive, in this case it means that the probability of a substitution at a particular base increases with increasing distance from the origin of replication.
+This is to be expected because as replication proceeds from the origin towards the terminus, it is more prone to errors.
+Additionally, genes that are associated with core functions of the organism are typically found near the origin of replication.
+Since errors in these genes could be detrimental, we expect less substitutions and mutations to be present.
+
+If the coefficent estimate is significantly negative, in this case it means that the probability of a substitution at a particular base in the genome decreases with increasing distance from the origin of replication.
+This is counterintutive to the typical organization of bacterial genomes.
+However, I failed to mention the most important part of my analysis, I take into account genomic rearrangements.
+Bacterial genomes are frequently re-arranging, re-organizing, and re-working their genomic information through a variety of processes such as duplications, traanslocations, and horizontal gene transfer.
+I account for these rearrangements by allowing genomic segments to be present in different locations in various bacterial strains.
+Previous studies have not accounted for rearrangements, which could explain why most of the bacterial replicons in this study have a higher probability of substitutions near the origin of replication.
 
 
 I was really excited for this assignment because I think it is a cool way to present multiple coefficent estimates focusing on their significance.
-It never occured to me to present my logistic regression results like this.
+It never occured to me to present my regression results like this.
 
-```{r}
-#I tried many things to make the bacteria names italic (like the below code), but I just could not get it to work.
-#dwplot() appears to not like expressions or paste...or substitute
+
+### Other things...
+```{r, test, linewidth=60}
+#I tried many things to make the bacteria names italic 
+#(like the below code), but I just could not get it 
+#to work. dwplot() appears to not like expressions or 
+#paste...or substitute
 #subs_dat %>% dwplot(relabel_predictors(c("ecoli" = expression(paste(italic("E.coli"), " Chromosome")),
 #                          "bass" = expression(paste(italic("B. subtilis"), " Chromosome")),
 #                          "strep" = expression(paste(italic("Streptomyces"), " Chromosome")),
