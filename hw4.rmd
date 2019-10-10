@@ -48,9 +48,10 @@ opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 As part of my thesis I have information about substitutions and their variation across four bacterial genomes: \ecol, \bass, \strep, and \smel.
 The bacteria \smel
 is a multi-repliconic bacteria and therefore each of it's replicons is analyzed separately. 
-The data is binary, stating at each site in the genome if there is a substitution, or there is not.
+The data is binary: determining at each site in the genome if there is a substitution (1), or there is not (0).
 This was also broken down into protein coding and non-protein coding sections of the genome.
-I previously fit a logistic regression to the data and obtained a table with the following results:
+We expect that non-protein coding segments of the genome to be undergoing more substitutions because they are typically "less important" than protein-coding segments of the genome.
+I previously fit a logistic regression to the data and obtained a tables with the following results:
 
 
 \begin{table}[h]
@@ -95,6 +96,7 @@ Read in the data and format: (I have over 160 million lines of data so it was ju
 
 I think I may have cheated a bit, but I made each bacteria a "term" even though they were not actually "terms" in the model.
 Each logistic regression model was run separately on both the protein coding and non-protein coding sections of each bacterial replicon.
+I did this so the data would be displayed in the graph the way that I want it to be.
 ```{r, data_read}
 subs_dat <- read.table(header=TRUE,check.names=FALSE,text="
 term model  estimate  std.error statistic p.value 
@@ -150,6 +152,7 @@ If the coefficient estimate is significantly positive, in this case it means tha
 This is to be expected because as replication proceeds from the origin towards the terminus, it is more prone to errors.
 Additionally, genes that are associated with core functions of the organism are typically found near the origin of replication.
 Since errors in these genes could be detrimental, we expect less substitutions and mutations to be present.
+Therefore, we should observe more substitutions near the terminus of the genome, and less substitutions near the origin of replication.
 
 If the coefficient estimate is significantly negative, in this case it means that the probability of a substitution at a particular base in the genome decreases with increasing distance from the origin of replication.
 This is counterintuitive to the typical organization of bacterial genomes.
@@ -181,7 +184,7 @@ dwplot(size = 3, subs_dat) %>%
 ### Discussion of Graph 2
 I did not like the way that the coefficient estimate numbers looked on the x-axis so I wanted to try and see what they would look like as smaller numbers.
 I think it looks better, but I am not sure if this is maybe harder to read because people have to do some mental math to determine how small the coefficient estimate is.
-I am also unsure if scaling the coefficient estimates and standard errors this way is wrong.
+I am also unsure if scaling the coefficient estimates and standard errors this way is mathematically correct.
 
 
 I was really excited for this assignment because I think it is a cool way to present multiple coefficient estimates focusing on their significance.
@@ -194,6 +197,7 @@ It never occurred to me to present my regression results like this.
 #(like the below code), but I just could not get it 
 #to work. dwplot() appears to not like expressions or 
 #paste...or substitute
+
 #subs_dat %>% dwplot(relabel_predictors(c("ecoli" = expression(paste(italic("E.coli"), " Chromosome")),
 #                          "bass" = expression(paste(italic("B. subtilis"), " Chromosome")),
 #                          "strep" = expression(paste(italic("Streptomyces"), " Chromosome")),
