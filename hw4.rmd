@@ -114,7 +114,7 @@ pb  0 0.0000004771  0.00000005314 8.978 0.0000000000000002
 ")
 ```
 
-### Graph
+### Graph 1
 ```{r, graph, linewidth=60}
 dwplot(size = 3, subs_dat) %>%
   relabel_predictors(ecoli = "E.coli",
@@ -132,7 +132,7 @@ dwplot(size = 3, subs_dat) %>%
 ```
 
 
-### Discussion of Graph
+### Discussion of Graph 1
 In this graphic the coefficent estimates for each logistic regression are plotted.
 I have added in a reference line at zero to assist with determining statistical significance. 
 Typically, any coefficent estimates (and their respective standard errors) that cross over the zero reference line are not considered significant.
@@ -157,6 +157,31 @@ However, I failed to mention the most important part of my analysis, I take into
 Bacterial genomes are frequently re-arranging, re-organizing, and re-working their genomic information through a variety of processes such as duplications, traanslocations, and horizontal gene transfer.
 I account for these rearrangements by allowing genomic segments to be present in different locations in various bacterial strains.
 Previous studies have not accounted for rearrangements, which could explain why most of the bacterial replicons in this study have a higher probability of substitutions near the origin of replication.
+
+### Graph 2
+```{r, graph2, linewidth=60}
+subs_dat$estimate <- subs_dat$estimate * 1000000
+subs_dat$std.error <- subs_dat$std.error * 1000000
+dwplot(size = 3, subs_dat) %>%
+  relabel_predictors(ecoli = "E.coli",
+                          bass = "B. subtilis",
+                          strep = "Streptomyces",
+                          schrom = "S.meliloti Chromosome",
+                          pa = "S.meliloti pSymA",
+                          pb = "S.meliloti pSymB", face = "italic") +
+  xlab(bquote('Coefficent Estimates'~(x10^2))) +
+  geom_vline(xintercept=0,lty=2)+ 
+  scale_colour_manual(values=c("#E08F8F","#173FAA"),
+                      name = "",
+                      labels = c("Protein Coding", "Non-Protein Coding"))
+ 
+```
+
+
+### Discussion of Graph 2
+I did not like the way that the coefficent estimate numbers looked on the x-axis so I wanted to try and see what they would look like as smaller numbers.
+I think it looks better, but I am not sure if this is maybe harder to read because people have to do some mental math to determine how small the coefficent estimate is.
+I am also unsure if scaling the coefficent estimates and standard errors this way is wrong.
 
 
 I was really excited for this assignment because I think it is a cool way to present multiple coefficent estimates focusing on their significance.
