@@ -14,6 +14,18 @@ library(sjPlot)
 library(sjlabelled)
 library(sjmisc)
 library(ggplot2)
+library(flextable)
+options(scipen=10000)
+theme_set(theme_bw() + theme(strip.background =element_rect(fill="#e7e5e2")) +
+            theme(strip.text = element_text(size =10)) +
+            theme(plot.title = element_text(hjust = 0.5), 
+                  panel.background = element_rect(fill = "white", colour = NA), 
+                  panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+                  panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+                  panel.spacing = unit(0.25, "lines"), 
+                  axis.text=element_text(size=10),
+                  legend.position="top") 
+          )
 ```
 
 
@@ -72,57 +84,80 @@ I previously fit a logistic regression to the data and obtained a table with the
 
 
 Read in the data and format: (I have over 160 million lines of data so it was just not feisable to run the logistic regressions. So I manually added the output from the logistic regression results)
+
+I think I may have cheated a bit, but I made each bacteria a "term" even though they were not actually "terms" in the model.
+Each logistic regression model was run separatly on both the protein coding and non-protein coding sections of each bacterial replicon.
 ```{r}
 subs_dat <- read.table(header=TRUE,check.names=FALSE,text="
-model bac cod_class term  estimate  std.err statistic p.value 
-logit ecoli 1 pos -0.00000004308 0.000000002584  -16.67 0.0000000000000002
-logit ecoli 0 pos 0.000000009896  0.000000007159  1.382 0.167
-logit bass  1 pos -0.00000004971  0.000000004268  -11.65  0.0000000000000002
-logit bass  0 pos -0.0000001055 0.0000000125  -8.436  0.0000000000000002
-logit strep  1 pos 0.00000001989 0.0000000008696 57.37 0.0000000000000002
-logit strep 0 pos 0.0000001635  0.000000002893  56.5  0.0000000000000002
-logit schrom  1 pos -0.0000001903 0.0000000213  -8.934  0.0000000000000002
-logit schrom  0 pos -0.0000002900 0.00000003852 -7.527  0.0000000000000518
-logit pa  1 pos  -0.0000006642  0.00000002801 -23.71  0.0000000000000002
-logit pa  0 pos -0.000001263  0.00000005595 -22.57  0.0000000000000002
-logit pb  1 pos 0.0000001769  0.0000000233  7.593 0.0000000000000311
-logit pb  0 pos 0.0000004771  0.00000005314 8.978 0.0000000000000002
+term model  estimate  std.error statistic p.value 
+ecoli 1 -0.00000004308 0.000000002584  -16.67 0.0000000000000002
+ecoli 0 0.000000009896  0.000000007159  1.382 0.167
+bass  1 -0.00000004971  0.000000004268  -11.65  0.0000000000000002
+bass  0 -0.0000001055 0.0000000125  -8.436  0.0000000000000002
+strep  1 0.00000001989 0.0000000008696 57.37 0.0000000000000002
+strep 0 0.0000001635  0.000000002893  56.5  0.0000000000000002
+schrom  1 -0.0000001903 0.0000000213  -8.934  0.0000000000000002
+schrom  0 -0.0000002900 0.00000003852 -7.527  0.0000000000000518
+pa  1  -0.0000006642  0.00000002801 -23.71  0.0000000000000002
+pa  0 -0.000001263  0.00000005595 -22.57  0.0000000000000002
+pb  1 0.0000001769  0.0000000233  7.593 0.0000000000000311
+pb  0 0.0000004771  0.00000005314 8.978 0.0000000000000002
 
 ")
-
-#separated this into coding
-subs_dat_cod <- read.table(header=TRUE,check.names=FALSE,text="
-term  estimate  std.err statistic p.value 
-ecoli -0.00000004308 0.000000002584  -16.67 0.0000000000000002
-bass -0.00000004971  0.000000004268  -11.65  0.0000000000000002
-strep 0.00000001989 0.0000000008696 57.37 0.0000000000000002
-schrom -0.0000001903 0.0000000213  -8.934  0.0000000000000002
-pa  -0.0000006642  0.00000002801 -23.71  0.0000000000000002
-pb 0.0000001769  0.0000000233  7.593 0.0000000000000311
-
-")
-
-#separated this into non coding
-subs_dat_noncod <- read.table(header=TRUE,check.names=FALSE,text="
-term  estimate  std.err statistic p.value 
-ecoli 0.000000009896  0.000000007159  1.382 0.167
-bass -0.0000001055 0.0000000125  -8.436  0.0000000000000002
-strep 0.0000001635  0.000000002893  56.5  0.0000000000000002
-schrom -0.0000002900 0.00000003852 -7.527  0.0000000000000518
-pa -0.000001263  0.00000005595 -22.57  0.0000000000000002
-pb 0.0000004771  0.00000005314 8.978 0.0000000000000002
-
-")
-
 ```
 
-### Graphs
+### Graph
 ```{r}
-#why does this have NA on the x-axis??? is it because things are too small??
-dotwisk <- dwplot(subs_dat_noncod)
-print(dotwisk)
-#my other failed attempt
-#plot_model(subs_dat_noncod)
-
+dwplot(size = 3, subs_dat) %>%
+  relabel_predictors(ecoli = "E.coli",
+                          bass = "B. subtilis",
+                          strep = "Streptomyces",
+                          schrom = "S.meliloti Chromosome",
+                          pa = "S.meliloti pSymA",
+                          pb = "S.meliloti pSymB", face = "italic") +
+  xlab("Coefficent Estimates") +
+  geom_vline(xintercept=0,lty=2)+ 
+  scale_colour_manual(values=c("#E08F8F","#173FAA"),
+                      name = "",
+                      labels = c("Protein Coding", "Non-Protein Coding"))
+ 
 ```
+
+
+### Discussion
+
+
+
+I was really excited for this assignment because I think it is a cool way to present multiple coefficent estimates focusing on their significance.
+It never occured to me to present my logistic regression results like this.
+
+```{r}
+#I tried many things to make the bacteria names italic (like the below code), but I just could not get it to work.
+#dwplot() appears to not like expressions or paste...or substitute
+#subs_dat %>% dwplot(relabel_predictors(c("ecoli" = expression(paste(italic("E.coli"), " Chromosome")),
+#                          "bass" = expression(paste(italic("B. subtilis"), " Chromosome")),
+#                          "strep" = expression(paste(italic("Streptomyces"), " Chromosome")),
+#                          "sinoC" = expression(paste(italic("S.meliloti"), " Chromosome")),
+#                          "pSymA" = expression(paste(italic("S.meliloti"), " pSymA")),
+#                          "pSymB" = expression(paste(italic("S.meliloti"), " pSymB"))))) +
+#  xlab("CHANGE ME (x10^2)") +
+#  geom_vline(xintercept=0,lty=2)+ 
+#  scale_colour_manual(values=c("#E08F8F","#173FAA"),
+#                      name = "",
+#                      breaks=c("0","1"),
+#                      labels = c("Protein Coding", "Non-Protein Coding"))
+
+#I also tried this before I made the dwplot
+##make sure bacteria names are italic
+#bac_names <- c("ecoli" = expression(paste(italic("E.coli"), " Chromosome")),
+#                          "bass" = expression(paste(italic("B. subtilis"), " Chromosome")),
+#                          "strep" = expression(paste(italic("Streptomyces"), " Chromosome")),
+#                          "sinoC" = expression(paste(italic("S.meliloti"), " Chromosome")),
+#                          "pSymA" = expression(paste(italic("S.meliloti"), " pSymA")),
+#                          "pSymB" = expression(paste(italic("S.meliloti"), " pSymB")))
+# 
+#subs_dat$term <- bac_names
+ 
+```
+
 
