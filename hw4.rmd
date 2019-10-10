@@ -47,7 +47,7 @@ opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 
 As part of my thesis I have information about substitutions and their variation across four bacterial genomes: \ecol, \bass, \strep, and \smel.
 The bacteria \smel
-is a multi-repliconic bacteria and therefore each of it's replicons is analized separatly. 
+is a multi-repliconic bacteria and therefore each of it's replicons is analyzed separately. 
 The data is binary, stating at each site in the genome if there is a substitution, or there is not.
 This was also broken down into protein coding and non-protein coding sections of the genome.
 I previously fit a logistic regression to the data and obtained a table with the following results:
@@ -59,7 +59,7 @@ I previously fit a logistic regression to the data and obtained a table with the
 			\toprule
 			\multicolumn{5}{c}{Protein Coding} \\
 			\midrule
-			Bacteria and Replicon & Coefficent Estimate & Standard Error & z-value & P($>$|z|)\\
+			Bacteria and Replicon & Coefficient Estimate & Standard Error & z-value & P($>$|z|)\\
 			\midrule
 			\ecol Chromosome &  -4.308\e{-8} & 2.584\e{-9} & -16.67 & $<$2\e{-16} \\
 			\bass Chromosome &  -4.971\e{-8} & 4.268\e{-9} & -11.65 & $<$2\e{-16} \\
@@ -78,7 +78,7 @@ I previously fit a logistic regression to the data and obtained a table with the
 			\toprule
 			\multicolumn{5}{c}{Non-Protein Coding} \\
 			\midrule
-			Bacteria and Replicon & Coefficent Estimate & Standard Error & z-value & P\\
+			Bacteria and Replicon & Coefficient Estimate & Standard Error & z-value & P\\
 			\midrule
 			 \ecol Chromosome &  9.896\e{-9} & 7.159\e{-9} & 1.382 & 0.167 \\
 			 \bass Chromosome &  -1.055\e{-7} & 1.25\e{-8} & -8.436 & $<$2\e{-16}  \\
@@ -91,10 +91,10 @@ I previously fit a logistic regression to the data and obtained a table with the
 \end{table}
 
 
-Read in the data and format: (I have over 160 million lines of data so it was just not feisable to run the logistic regressions. So I manually added the output from the logistic regression results)
+Read in the data and format: (I have over 160 million lines of data so it was just not feasible to run the logistic regressions. So I manually added the output from the logistic regression results)
 
 I think I may have cheated a bit, but I made each bacteria a "term" even though they were not actually "terms" in the model.
-Each logistic regression model was run separatly on both the protein coding and non-protein coding sections of each bacterial replicon.
+Each logistic regression model was run separately on both the protein coding and non-protein coding sections of each bacterial replicon.
 ```{r, data_read}
 subs_dat <- read.table(header=TRUE,check.names=FALSE,text="
 term model  estimate  std.error statistic p.value 
@@ -123,7 +123,7 @@ dwplot(size = 3, subs_dat) %>%
                           schrom = "S.meliloti Chromosome",
                           pa = "S.meliloti pSymA",
                           pb = "S.meliloti pSymB", face = "italic") +
-  xlab("Coefficent Estimates") +
+  xlab("Coefficient Estimates") +
   geom_vline(xintercept=0,lty=2)+ 
   scale_colour_manual(values=c("#E08F8F","#173FAA"),
                       name = "",
@@ -133,28 +133,28 @@ dwplot(size = 3, subs_dat) %>%
 
 
 ### Discussion of Graph 1
-In this graphic the coefficent estimates for each logistic regression are plotted.
+In this graphic the coefficient estimates for each logistic regression are plotted.
 I have added in a reference line at zero to assist with determining statistical significance. 
-Typically, any coefficent estimates (and their respective standard errors) that cross over the zero reference line are not considered significant.
+Typically, any coefficient estimates (and their respective standard errors) that cross over the zero reference line are not considered significant.
 In this plot, it is clear that the only estimate that is not significant is the non-protein coding regions of \ecol. 
 In the protein coding regions of \strep
-, the coefficent estimate is very close to the zero reference line, but does not touch it, and is therefore significant.
+, the coefficient estimate is very close to the zero reference line, but does not touch it, and is therefore significant.
 
-It is also very easy to see which bacterial replicons have a positive or negative coefficent estimate. 
+It is also very easy to see which bacterial replicons have a positive or negative coefficient estimate. 
 pSymB of \smel 
 and \strep 
-are the only replicons to have a significant positive coefficent estimate, while the rest of the bacterial replicons have a significant negative coefficent estimate.
+are the only replicons to have a significant positive coefficient estimate, while the rest of the bacterial replicons have a significant negative coefficient estimate.
 
 ### Discussion on Biological Relevance
-If the coefficent estimate is significantly positive, in this case it means that the probability of a substitution at a particular base increases with increasing distance from the origin of replication.
+If the coefficient estimate is significantly positive, in this case it means that the probability of a substitution at a particular base increases with increasing distance from the origin of replication.
 This is to be expected because as replication proceeds from the origin towards the terminus, it is more prone to errors.
 Additionally, genes that are associated with core functions of the organism are typically found near the origin of replication.
 Since errors in these genes could be detrimental, we expect less substitutions and mutations to be present.
 
-If the coefficent estimate is significantly negative, in this case it means that the probability of a substitution at a particular base in the genome decreases with increasing distance from the origin of replication.
-This is counterintutive to the typical organization of bacterial genomes.
+If the coefficient estimate is significantly negative, in this case it means that the probability of a substitution at a particular base in the genome decreases with increasing distance from the origin of replication.
+This is counterintuitive to the typical organization of bacterial genomes.
 However, I failed to mention the most important part of my analysis, I take into account genomic rearrangements.
-Bacterial genomes are frequently re-arranging, re-organizing, and re-working their genomic information through a variety of processes such as duplications, traanslocations, and horizontal gene transfer.
+Bacterial genomes are frequently re-arranging, re-organizing, and re-working their genomic information through a variety of processes such as duplications, translocations, and horizontal gene transfer.
 I account for these rearrangements by allowing genomic segments to be present in different locations in various bacterial strains.
 Previous studies have not accounted for rearrangements, which could explain why most of the bacterial replicons in this study have a higher probability of substitutions near the origin of replication.
 
@@ -169,7 +169,7 @@ dwplot(size = 3, subs_dat) %>%
                           schrom = "S.meliloti Chromosome",
                           pa = "S.meliloti pSymA",
                           pb = "S.meliloti pSymB", face = "italic") +
-  xlab(bquote('Coefficent Estimates'~(x10^2))) +
+  xlab(bquote('Coefficient Estimates'~(x10^2))) +
   geom_vline(xintercept=0,lty=2)+ 
   scale_colour_manual(values=c("#E08F8F","#173FAA"),
                       name = "",
@@ -179,13 +179,13 @@ dwplot(size = 3, subs_dat) %>%
 
 
 ### Discussion of Graph 2
-I did not like the way that the coefficent estimate numbers looked on the x-axis so I wanted to try and see what they would look like as smaller numbers.
-I think it looks better, but I am not sure if this is maybe harder to read because people have to do some mental math to determine how small the coefficent estimate is.
-I am also unsure if scaling the coefficent estimates and standard errors this way is wrong.
+I did not like the way that the coefficient estimate numbers looked on the x-axis so I wanted to try and see what they would look like as smaller numbers.
+I think it looks better, but I am not sure if this is maybe harder to read because people have to do some mental math to determine how small the coefficient estimate is.
+I am also unsure if scaling the coefficient estimates and standard errors this way is wrong.
 
 
-I was really excited for this assignment because I think it is a cool way to present multiple coefficent estimates focusing on their significance.
-It never occured to me to present my regression results like this.
+I was really excited for this assignment because I think it is a cool way to present multiple coefficient estimates focusing on their significance.
+It never occurred to me to present my regression results like this.
 
 
 ### Other things...
