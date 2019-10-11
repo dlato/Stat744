@@ -327,4 +327,21 @@ Oct 8, 2019:
 	
 	Dynamic Graphics:
 		- need to think about how someone will actually interact with your graph, will they print it or make it into a pdf that is not dynamic any more?
-		- 
+
+Oct 11, 2019:
+	- so if you have data that is clustered in one section of the graph, then if you ask R to draw it, it will not look great
+	- so if you choose 51 points that are evenly spaced across the data so it looks prettier when you plot it (if you are plotting predictions)
+	- if you have predictors you want to set up a reference grid
+	- here we are talking about very high dimensional models, where you cant possibly draw them all at once
+	- so you can average over some dimensions anddrop the dimentions of others, 
+	- calculated predicted values everywhere and then avg them
+	- or could calculate the avg value of a predictor and ...i dunno
+	- jensins ineq= if you ahve a non lin func, the values of the func are not the same as the average of the values, so finding value of x and then conpute avg, or compute all vales at f(x) and then take the avg
+	- I SEE
+	- ok so you can either calculate the values and then take the average, or you can find the average of your values (x) and then calculate f(avg_x)
+	- most ppl calc avg on the linear scale, and then back transform to get the probability
+	- but be careful that this is not the avg probability
+	- effects, emeans, sjPlot, are all packages in R that will help automate this and help you get a reference grid and calculate the average and stuff
+
+	About Wilkie Book:
+		- with the connected scatter plot you can put points or points that are arrows that are evenly spaced in time so you can tell the direction of the plot and how fast things are changing (bc they are the same time pts apart)

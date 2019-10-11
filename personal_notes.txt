@@ -318,3 +318,85 @@ https://serialmentor.com/dataviz/
 		- but when you do this, you need to make sure that your representatives are true of the distribution and not an artifact of sampling.
 		- so you either sample a lot, or say that some are misleading, or just state the probability at the end
 
+Proportional Ink:
+	- principal of propoertional ink: sizes of shaded areas in a visualization need to be proportional to the data values they represent
+	-  so when we have a bar that is x2 bigger than another bar, the data points representing those bars should actually be x2 bigger.
+	- otherwise the graphic is "bad" bc it is misleading and wrongly showing 2 different values for the same point
+	- not just limited to bars, but also points, lines...etc
+	- also has to do with anchoring at zero and how if you improperly do this then you can be misleading and making some bars look larger than they really are
+	- bars on a linear scale should always start at zero
+	- most of the example are bc they are NOT starting at zero when they really should.
+	- this also has to do with looking at small changes over time or over some other period/category 
+	- another way to show this is to show the change in median income and if it is increasing or decreasing you can use positive or negative bars
+	- basically if you want to show the small changes, you should re-scale the data so it is showing change in median income over some time period or something so that the changes are more obvious, but still presenting it in a way where the graph is correct.
+	- make sure you are always talking about absoloute magnitude of changes, and not just relative changes
+	Log Scale:
+		- most of the time bars on a log scale are inappropriate, bc we can not accuratly judge how long they are bc they do not increase linearly.
+		- so it is best to just do points where the bars would end. then you also dont have to worry about anchoring around zero
+		- also can add the lables right on the plot next to the points instead of on the y or x axis, makes it easier to see whats what
+		- or you can use ratois, so bars that are positive and negative, or bigger than 1 and less than one... or whatever reference makes sense for you data. this way bars can be used
+		- always have the ability (usually) to alter your data some how so it can look the way you want in a graph you want
+		- log scale = ratios, therefore plot it as raitos
+	Direct area visualizations:
+		- pie charts are typically used here.
+		- but again, humans are better at determining lengths than areas so making these rectangles where we can artibute lengths is better, so back to bars
+		- we are better at judging distance than area
+		- same argument with why treemaps are sometimes harder to judge instead of bars
+
+Overlapping points:
+	- can have overlapping points bc of loads of data, or over-rounding
+	- hiding data is never good
+	- can make points transparent or partially transparent so you can tell when there are lots of data pts at one spot
+	- but this still makes it difficult to determine exactly how many points are at that value
+	- so you can jitter
+	- can jitter in x or y dir, or both!
+	- BEWARE that jittering does change the data, and if you do it too much then you can create visual trends that are not actually true
+	- best to state that you jittered
+	-  when your data points are just too numerous you cant do jitter or transparancy
+	- this is when you can use 2D histograms or some sort of hex or heat map to show densities at differnt levels, this can be a smooth gradient of colour, or defined colours for different bins
+	- hexagons are good because they are closer to the center average
+	- can also use contour lines (look like elevation maps) they basically tell you about point density across the grid
+	- and just like elevation maps, we usually want the more dense areas to be shaded in dark colours, and the light less important points we want to "fade into the background"
+	- can also plot multiple contour graphs ontop of each other to see how M and F differ, or any other categorical grouping of your data
+	- this can be especially helpful when you have loads of groups
+	- but this can also get messy if you have too many right on top of eachother, so, you should then employ facet so that you can separate it out a bit and make it easier to read
+
+Pitfalls of Colour use:
+	- if you have a category that has too many categories then you cant use colour bc we just cant keep track of and process that many diff colours
+	- THREE TO FIVE COLOURS FOR QUANTATIVE DATA
+	- eight to ten make it really hard to keep track
+	- so if you can further split up your data, like geographic region (instead of 52 states) and then label each one individually on the graph, it works much better
+	- or just lable some of the points (like a sample that you will talk about in the text)
+	- can always put it in supp so that ppl have access
+	- should not colour just to colour, bc that is ugly
+	- colour intensity also can make a figure hard to look at (hard to read names, hard to see end pts on bars..etc)
+	- ** avoid large filled areas of overly saturated colours
+	- colour needs to clearly show which values mean large, and which values mean small
+	- always remember how your graph and colours will look in greyscale, the rainbow does not turn up well in greyscale bc there are large stretches of light colours that we can not distinguish and then small changes of dark colours that we also can not distinguish
+	- always think about ppl with colour-vision dificiency
+	- generally, sequential scales will not cause problems for ppl with color-vision dificiency (cvd) (so dark blue to white, only one colour changes)
+	- diverging scales are more complicated, bc popular colour contrasts can become indistinguishable to cvd.
+	- NEVER COMPARE RED AND GREEN (its too hard for ppl with cvd to distinguish)
+	- ALSO blue and green comparisons are also hard for certain cvd :(
+	- pink to yellow green is good (colourbrewer PiYG, in R)
+	- things get most complicated for quantative scales bc we need many diff colours and they all need to be different from eachother
+	- qualitative scales are the hardest bc you need lots of different colours
+	- has good list of 8 colours that work well together
+	- size of the dots and bars and lines also has to do with how well ppl can see it, weather they are cvd or not.
+	- can test your fig with a cvd simulator to see what it would look like under different conditions
+
+Redundant Coding:
+	- using redundant coding is a good thing! (usually)
+	- be careful when you use transparancy and overlapping pts with different colours bc it can be hard to distinguish and make bad figs, and on top of this you need to think about cvd individuals
+	- so code the categories in separate colours AND different point shapes (redundant, but easier to distinguish)
+	- spread out colours that look similar (like blue and green) with other colours inbetween so again it is easier to distinguish
+	- talking about ordering your data so that it makes more sense, decreasing to increasing, vice versa...etc. and make sure your legend matches this too! this also makes it easier for ppl to see trends
+	- this also makes it easier to match the legend to the data (if they are in the same order) and therefore makes it easier to undertand! and is good for cvd ppl bc they can just read it in the same order even if it does not match completely
+	- however, if you have few categories, it is preferable to discard the legend and put what would be in the legend right on the plot next to the corresponding lines or bars
+	- bc readers need to look at the legend and then look at the plot, its an extra step we always want to avoid
+	- can also draw elipses over scatter plots to help better group the points and then also add in direct lables (labels right on the graph) to again get rid of the legend
+	- so in Fig 20.9, there are 4 redundant coding of the iris type: colour, shape, eppipse and direct label.
+	- ***** sometimes the colour you choose is too light to be a text colour, so you can darken it a bit and use that shade of the colour for the text label so that it is more readable but still gets across the same point that it matches the colour *****
+	- Fig 20.11 is interesting! adds density plots to the edges of the scatter plot (so a density plot for each direction, for each iris type) and direct labels those so we can see whats going on with the data and which iris types are more similar on the x and y axis so we can then make inferences about what is going on overall
+	- this creates a slighly less cluttered fig compared to the ellipsed one
+	- can map the same variable that we would normally put into a legend, onto colour and have a colour ref bar to show densities (nice Fig, 20.12)
