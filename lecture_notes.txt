@@ -345,3 +345,38 @@ Oct 11, 2019:
 
 	About Wilkie Book:
 		- with the connected scatter plot you can put points or points that are arrows that are evenly spaced in time so you can tell the direction of the plot and how fast things are changing (bc they are the same time pts apart)
+
+Oct 22, 2019:
+	Interactive Graphics:
+		- we are trying to guide viewers but also trying to get them to explore themselves
+		- fine line btwn interactive graphics and animated graphics
+		- when does a graphic become an app or a webpage...etc
+		- can put more info onto the graph if it is interactive (like the vaccine graphic with the vaccination stuff)
+		- can also have a dot on the graph that will then be explained in the caption, in an interactive graphic you can just put this right on the graph but only be visible when you hover over it, so it really can follow the principals of data viz better than just a 2D graphic
+		- mostly we want the viewer to zoom in, select certain categories, etc. can do all this without loosing access to other categories, or without presenting too much info
+		- can also hilight certain parts of the graph so that viwer can see what they want, so hilighting trendline, but letting the viewer hilight at the points if they want so that they can focus on that and not the trendline 
+		
+		Gap minder:
+		- animated charts, way to make this
+		- (https://www.gapminder.org/tools/#$chart-type=bubbles)
+		- not R friendly, but this is like the "goal" so you can try to do all these things in R or with google viz
+		- so anything that you want to do is basically possible
+		- (https://towardsdatascience.com/how-to-build-animated-charts-like-hans-rosling-doing-it-all-in-r-570efc6ba382)
+		- plotly: (https://plotly-r.com/)
+		- htmlwidgets examples (https://www.htmlwidgets.org/)
+
+		Rpackages:
+		- ggvis: is conceptually exciting, but not really useful bc it did not work, so dont really bother using it (package is called plotly)
+		- ggplotly
+		- googleVis
+		- leaflet
+
+	Playing with plotly:
+		- can just pipe a ggplot to plotly and it will do some automatic stuff to make it interactive, like zooming and being able to hover over pts and then get extra info for them ..etc. 
+		- to make it look nicer will take a bit of playing
+		- so you can pass asthetics to ggplot that really do not mean anything for ggplot but then plotly will use this to add extra info so that we can then have this as an interactive bit in the graph
+		- can also make animations with ggplotly
+		- 
+
+		-reducing sig digits on graphs
+
