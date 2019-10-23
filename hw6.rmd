@@ -112,7 +112,7 @@ rg <- (base_g
 direct.label(rg,method="last.points")
 ```
 
-### Discription of Graph 1:
+### Description of Graph 1:
 In this graphic my main goal was to show the difference in distribution of protein coding substitutions and non-protein coding substitutions.
 The above graph is looking at the "raw" total counts of substitutions in each 10,000 bp (or 10kb) region of the genome.
 According to the Cleveland hierarchy, we are best at identifying positions along a common scale.
@@ -120,25 +120,25 @@ Here I am showing how protein coding and non-protein coding substitutions vary w
 I believe that the font size and aspect ratio are all fine.
 I chose to re-scale the data so that the numbers along the x and y axis look "prettier".
 Since the genome and number of substitutions are integers, they can be scaled while still having the graphs make sense.
-This also necessitates the use of units so the viwer can determine the magnitude of the values on the graph.
+This also necessitates the use of units so the viewer can determine the magnitude of the values on the graph.
 Since it is possible to have zero substitutions at a particular site as well as having the genome begin at zero, anchoring the graph at zero in both the x and y direction is appropriate and accurate.
 
-I decided to use direct labels to avoide having the viewer rely on looking at a legend for reference.
+I decided to use direct labels to avoid having the viewer rely on looking at a legend for reference.
 I do not really like all the white space that this creates from having to extend the x-axis to make the labels fit, so I am not sure if it was better to have the legend. (see graph at end for version with the legend)
-I suppose this might be a preference and asthetic issue and not a "bad graph" issue.
+I suppose this might be a preference and aesthetic issue and not a "bad graph" issue.
 Although, having the axis extend could mislead the viewer in thinking that the \ecol
 genome is longer than it actually is and that I am "missing data" from the end of the genome.
 
-I tried to choose colours that are asthetically pleasing but also easy to distinguish between the two categorical variables.
+I tried to choose colours that are aesthetically pleasing but also easy to distinguish between the two categorical variables.
 I additionally chose colours that would be colour-blind and black-and-white friendly (which is quite challenging when you want it to look pretty!). 
-My favourite website to choose complementary colours from is [coolors](https://coolors.co/).
+My favorite website to choose complementary colours from is [coolors](https://coolors.co/).
 
 I also added a trend line to help guide the viewer in seeing how each of these genomic classifications varies with genomic position.
 It is clear that the protein coding substitutions have a negative trend, indicating that there are higher numbers of substitutions near the beginning of the genome than at the end.
-Biologically this is curious, we expect there to be more essential genes located near the beginning of the genome, and these genes should therefore have fewer substitutions because any mutation could be detrimential to the organism.
-For the non-protein coding genes it is less clear if this trendline is positive, negative or relatively flat.
+Biologically this is curious, we expect there to be more essential genes located near the beginning of the genome, and these genes should therefore have fewer substitutions because any mutation could be detrimental to the organism.
+For the non-protein coding genes it is less clear if this trend line is positive, negative or relatively flat.
 
-Another biologically curious aspect to this graph is that overall the number of protein coding substitutions seems to exceede the number of non-protein coding substitutions.
+Another biologically curious aspect to this graph is that overall the number of protein coding substitutions seems to exceed the number of non-protein coding substitutions.
 This should not be happening because again, we expect genes that are coding for proteins to be more important to the organisms survival than DNA that does not code for proteins.
 Therefore, non-protein coding regions should have more substitutions than protein coding regions.
 
@@ -146,7 +146,7 @@ Therefore, non-protein coding regions should have more substitutions than protei
 ### Proportional Data:
 I thought that the above graph was deceiving because it makes it look like there are more protein coding substitutions than non-protein coding substitutions.
 However, there is a disproportional amount of protein coding sites in bacterial genomes compared to non-protein coding sites.
-Bacterial genomes are almost exclusivly protein coding!
+Bacterial genomes are almost exclusively protein coding!
 So, I decided to divide the total number of protein coding or non-protein coding substitutions in a 10,000bp segment by the total number of protein coding or non-protein coding sites respectively.
 
 ```{r, data_weighted}
@@ -188,7 +188,7 @@ wg <- (base_g2
 wg
 ```
 
-### Discription of Graph 2:
+### Description of Graph 2:
 
 The drastic trend of protein coding substitutions being higher than non-protein coding substitutions is reduced in this graph.
 However, it still appears as though there are still more protein coding substitutions per site than non-protein coding substitutions.
@@ -198,14 +198,14 @@ Non-protein coding regions of bacterial genomes are less conserved than the prot
 Therefore, a significant portion of these non-protein coding regions may be missing due to the sequence length restriction.
 This could potentially be why the number of substitutions per site appear to be higher than non-protein coding regions.
 
-With respect to the visualization of this graph, most of the same points that I mentioned before appily.
+With respect to the visualization of this graph, most of the same points that I mentioned before apply.
 I decided to include a legend here instead of direct labeling because the points are not organized in a way that clearly separates the protein coding and non-protein coding categories.
 So I thought a legend would be clearer than having direct labels.
 
-I keept the colouring of each genomic category the same as the previous graph so that anyone reading this report would begin to associate protein coding with dark blue and non-protein coding with orange.
+I kept the colouring of each genomic category the same as the previous graph so that anyone reading this report would begin to associate protein coding with dark blue and non-protein coding with orange.
 This makes for quicker recognition when presented with multiple graphs of the same categories.
 
-I additionally ensured that the labels in the legend matched the order of the trend lines in the graph (left to right coensides with top to bottom).
+I additionally ensured that the labels in the legend matched the order of the trend lines in the graph (left to right coincide with top to bottom).
 
 ### Graph 1 with legend
 ```{r, graph1_with_legend, linewidth=60}
