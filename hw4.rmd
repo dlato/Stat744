@@ -16,6 +16,7 @@ library(sjmisc)
 library(ggplot2)
 library(flextable)
 options(scipen=10000)
+## BMB: thanks for setting the theme up front
 theme_set(theme_bw() + theme(strip.background =element_rect(fill="#e7e5e2")) +
             theme(strip.text = element_text(size =10)) +
             theme(plot.title = element_text(hjust = 0.5), 
@@ -32,7 +33,6 @@ library(knitr)
 opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 ```
 
-
 \newcommand{\smel}{\textit{S.\,meliloti}\xspace}
 \newcommand{\bass}{\textit{B.\,subtilis}\xspace}
 \newcommand{\ecol}{\textit{E.\,coli}\xspace}
@@ -47,7 +47,9 @@ opts_chunk$set(tidy.opts=list(width.cutoff=70),tidy=TRUE)
 
 As part of my thesis I have information about substitutions and their variation across four bacterial genomes: \ecol, \bass, \strep, and \smel.
 The bacteria \smel
-is a multi-repliconic bacteria and therefore each of it's replicons is analyzed separately. 
+is  multi-repliconic and therefore each of its replicons is analyzed separately. 
+**BMB: for explaining this to lay people you might want to say more about what "multi-repliconic" means ...**
+
 The data is binary: determining at each site in the genome if there is a substitution (1), or there is not (0).
 This was also broken down into protein coding and non-protein coding sections of the genome.
 We expect that non-protein coding segments of the genome to be undergoing more substitutions because they are typically "less important" than protein-coding segments of the genome.
@@ -73,6 +75,10 @@ I previously fit a logistic regression to the data and obtained a tables with th
 \end{table}
 
 
+**BMB: you can (and should!) create these tables straight from a table of values (e.g. see `Hmisc::latex` and `?pander::pandoc.table`) or even straight from a fitted model (e.g. see the `huxtable` package). It's very clever of you to define the `\e{}` macro!**
+
+**BMB: it might make things easier to rescale by $10^{-6}$, if there were a way to explain it (so the numbers were easier to comprehend) -- change in substitution probably per million sites?**
+
 \begin{table}[h]
 	\centering
 		\begin{tabular}{lcccc}
@@ -94,9 +100,12 @@ I previously fit a logistic regression to the data and obtained a tables with th
 
 Read in the data and format: (I have over 160 million lines of data so it was just not feasible to run the logistic regressions. So I manually added the output from the logistic regression results)
 
+**BMB: you might be able to get very similar (and much faster) results by binning the data. I would really like to see what happens if you fit more flexible models as a function of distance! Probably good practice to output the fitted model, or at least its coefficient table.  See the `butcher` package for saving versions of the model that don't include all the data!**
+ 
 I think I may have cheated a bit, but I made each bacteria a "term" even though they were not actually "terms" in the model.
 Each logistic regression model was run separately on both the protein coding and non-protein coding sections of each bacterial replicon.
 I did this so the data would be displayed in the graph the way that I want it to be.
+
 ```{r, data_read}
 subs_dat <- read.table(header=TRUE,check.names=FALSE,text="
 term model  estimate  std.error statistic p.value 
@@ -115,17 +124,33 @@ pb  0 0.0000004771  0.00000005314 8.978 0.0000000000000002
 
 ")
 ```
+```{r}
+sp_labs <- c("E. coli","B. subtilis","S. meliloti Chromosome","S. meliloti pSymA")
+sp_expr <- "([[:alpha:]]\\. )?[[:alpha:]]+"
+sp_get <- function(value) stringr::str_extract(value,sp_expr)
+nonsp_get <- function(value) stringr::str_remove(value,sp_expr)
+sp_get(sp_labs)
+nonsp_get(sp_labs)
+## https://stackoverflow.com/questions/32803727/ggplot-scale-x-continuous-with-symbol-make-bold
+make_labels <- function(value) {
+  value <- as.character(value)
+  do.call(expression, Map(function(x,y) bquote(paste(italic(.(x)),.(y))),
+                         sp_get(value), nonsp_get(value)))
+}
+make_labels(sp_labs[1])
+```
 
 ### Graph 1
 ```{r, graph, linewidth=60}
 dwplot(size = 3, subs_dat) %>%
-  relabel_predictors(ecoli = "E.coli",
+  relabel_predictors(ecoli = "E. coli",
                           bass = "B. subtilis",
                           strep = "Streptomyces",
-                          schrom = "S.meliloti Chromosome",
-                          pa = "S.meliloti pSymA",
-                          pb = "S.meliloti pSymB", face = "italic") +
+                          schrom = "S. meliloti Chromosome",
+                          pa = "S. meliloti pSymA",
+                          pb = "S. meliloti pSymB", face = "italic") +
   xlab("Coefficient Estimates") +
+  scale_y_discrete(labels=make_labels) +                        
   geom_vline(xintercept=0,lty=2)+ 
   scale_colour_manual(values=c("#E08F8F","#173FAA"),
                       name = "",
@@ -135,12 +160,15 @@ dwplot(size = 3, subs_dat) %>%
 
 
 ### Discussion of Graph 1
+
 In this graphic the coefficient estimates for each logistic regression are plotted.
 I have added in a reference line at zero to assist with determining statistical significance. 
 Typically, any coefficient estimates (and their respective standard errors) that cross over the zero reference line are not considered significant.
-In this plot, it is clear that the only estimate that is not significant is the non-protein coding regions of \ecol. 
+In this plot, it is clear that the only estimate that is not significant is the non-protein coding regions of \ecol. **BMB why??**
 In the protein coding regions of \strep
 , the coefficient estimate is very close to the zero reference line, but does not touch it, and is therefore significant.
+
+**BMB: rescale coeff estimates to ``per million sites"?**
 
 It is also very easy to see which bacterial replicons have a positive or negative coefficient estimate. 
 pSymB of \smel 
@@ -149,6 +177,7 @@ are the only replicons to have a significant positive coefficient estimate, whil
 
 ### Discussion on Biological Relevance
 If the coefficient estimate is significantly positive, in this case it means that the probability of a substitution at a particular base increases with increasing distance from the origin of replication.
+**BMB: aha!! you probably should have said this earlier; I didn't know what the actual model was**
 This is to be expected because as replication proceeds from the origin towards the terminus, it is more prone to errors.
 Additionally, genes that are associated with core functions of the organism are typically found near the origin of replication.
 Since errors in these genes could be detrimental, we expect less substitutions and mutations to be present.
@@ -166,13 +195,15 @@ Previous studies have not accounted for rearrangements, which could explain why 
 subs_dat$estimate <- subs_dat$estimate * 1000000
 subs_dat$std.error <- subs_dat$std.error * 1000000
 dwplot(size = 3, subs_dat) %>%
-  relabel_predictors(ecoli = "E.coli",
+  ## BMB: try to avoid repetition?
+  relabel_predictors(ecoli = "E. coli",
                           bass = "B. subtilis",
                           strep = "Streptomyces",
-                          schrom = "S.meliloti Chromosome",
-                          pa = "S.meliloti pSymA",
-                          pb = "S.meliloti pSymB", face = "italic") +
-  xlab(bquote('Coefficient Estimates'~(x10^2))) +
+                          schrom = "S. meliloti Chromosome",
+                          pa = "S. meliloti pSymA",
+                          pb = "S. meliloti pSymB") +
+  scale_y_discrete(labels=make_labels) +                        
+  xlab(bquote('Coefficient Estimates'~(x10^6))) + ## BMB 10^6, right?
   geom_vline(xintercept=0,lty=2)+ 
   scale_colour_manual(values=c("#E08F8F","#173FAA"),
                       name = "",
@@ -183,8 +214,8 @@ dwplot(size = 3, subs_dat) %>%
 
 ### Discussion of Graph 2
 I did not like the way that the coefficient estimate numbers looked on the x-axis so I wanted to try and see what they would look like as smaller numbers.
-I think it looks better, but I am not sure if this is maybe harder to read because people have to do some mental math to determine how small the coefficient estimate is.
-I am also unsure if scaling the coefficient estimates and standard errors this way is mathematically correct.
+I think it looks better, but I am not sure if this is maybe harder to read because people have to do some mental math to determine how small the coefficient estimate is. **BMB: I prefer it**
+I am also unsure if scaling the coefficient estimates and standard errors this way is mathematically correct. **BMB: yes it is**
 
 
 I was really excited for this assignment because I think it is a cool way to present multiple coefficient estimates focusing on their significance.
@@ -224,4 +255,5 @@ It never occurred to me to present my regression results like this.
  
 ```
 
+**BMB: see my solution.  score: 2.25**
 
