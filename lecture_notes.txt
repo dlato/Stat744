@@ -380,3 +380,28 @@ Oct 22, 2019:
 
 		-reducing sig digits on graphs
 
+Oct 25, 2019:
+	Interactive graphs, live play:
+		- how to share your interactive graph is with html, or shiny, or you can make a video file and then user can start and stop. but this is really less interactive and more so just showing the story you want
+		- cross-talk: can have 2 graphs that are showing different traits and then you can ask ok what are these outliers on this one graph, and were do they fall on another graph that is showing a different trait. (sepal length outliers and where do they fall on the petal graph)
+		- so could also have a graph that is a map, and then again can select points that are showing certain categories. and can do it vice versa
+		- this was with a crosstalk package
+		- with interactive animation basically the programs are drawing a series of plots and then stitching them together with soem sort of set of controls
+		- side note: when drawing smooth line or lines connect the points on a scatter plot, you need to be careful that you are not falsly telling ppl that you have data for the sections between the points (tweenr is an R package that will help decide)
+		- need to think about:
+			1) transitions between frames and how that happens, humans really like smooth transitions, our brians can process it better
+			2) syntax and how the graphs should look and what you should put on axis and stuff, what frames you want to show, how specific you want to get
+			3) output format: do you want controls, just a vido and loop it?
+		- if you have a detailed dataset you might want to do MP4 instead of GIF bc it will only change the actually changing pixls, with GIF you can get it looking a bit weird
+		- can also use Java Script that will work on any modern browser
+		- Flash format: is not well supported, in linux but also looks like in windows
+		- html5 looks like the newest better version of flash
+		- you want to use things that have been around for a few years but ahave also been used recently, otherwise you could be using somethign that will be obsolete
+		- also with output you need to be thinking about how ppl are going to look at it and what programs they have on their computer, Java is pretty safe and usually will work on everyoens stuff
+		- **** can put animation in a pdf but it will only work in acrobat **** thesis easter egg
+
+		3D:
+		- 3D is generally bad, but one of the issues is that you can only look at it from 2D on paper
+		- but if you have dynamic control, and ppl can spin it like a real model, then that helps!
+		- library(rgl) is used to make 3D graphics, talked to the opengl package which is used to actually make the 3D stuff, rgl talks to opengl
+		- 

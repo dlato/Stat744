@@ -5,4 +5,5 @@
 - story telling part, and then maybe a behind the sceens part
 - could be purly exploratory
 - should ask if it actually is in partners or if we can do it alone...
-- 
+- want to NOT show several different graphs about how we did this and it was bad then we did this and it was still bad...blah, want to present final polished versions of the graphs and tell a story and then maybe in the metods section to talk about some of the struggal in creating graphs
+-  
