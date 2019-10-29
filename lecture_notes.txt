@@ -404,4 +404,37 @@ Oct 25, 2019:
 		- 3D is generally bad, but one of the issues is that you can only look at it from 2D on paper
 		- but if you have dynamic control, and ppl can spin it like a real model, then that helps!
 		- library(rgl) is used to make 3D graphics, talked to the opengl package which is used to actually make the 3D stuff, rgl talks to opengl
-		- 
+
+Oct 29, 2019:
+Spatial Data Visualization:
+	- mostly using package sf in r. which stands for simple features, straight lines and points, deals with it in a tidy and ggplot friendly way
+	- sp is another one that is a bit older but still does lots of the same stuff
+	-most of our data visualizations are on a 2D surface, so when we are talking about geospatial data then we have to worry about how to project the 3D to the 2D
+	- if our range is small (i.e. just hamilton) then we dont have an issue telling it to be flat 2D. but if we are dealing with all of north america, then its maybe hard to show this on 3D bc its so large
+	- trees and networks and lattices are also spatial!
+	- mostly spatial is polygons (which is postal codes or regions or provinces..etc)
+	- typically the polygons are non-overlapping and filling in an area
+	- could also have line info, ie. here is a road btwn 2 pts and we know traffic along this road
+	- stalite info we then have a square grid of pixels, which is lots of polygons basically, but they are all rectangular
+	- if we are niaevely plotting this in R, it will go one by one and that is super inefficent, so we then tell it there are larger regions that are all the same colour and intead of drawing each rectangle one by one. this is called a raster
+	- often we need to re-format the data, if we have too many points then its too much noise, so we need to make some transparent, or do density estimation (kernals, contours), binning, etc..
+	- most of the tools to do all this are things we have already seen in ggplot
+	- choropleth maps: what we classically think of when we think of plotting a map (coloured in areas)
+	- have to usually change the data so it is in actual lat and long format, bc usually its in local eucledian coords
+	- most of this will be taken care of for us
+	- can go from point dataset to continuious field, by calculating the local density of events (hex binning, similar) (interpolation)
+	- can add a compas and scale bar to help orient people with the map
+	- can add a raster layer that will add on a google map like image as background for your points so ppl can again orient themselves
+	- when you project from 3D earth to 2D you have to actually pick WHERE on the earth you are because the way it estimates your local elliposiodal surface of the earth only applies to a certain geographic area, usually the WGS54 local ellipsoide is fine
+	- can usually get all this stuff from google or r packages or whatever
+	- can also get this info from a shape file, can be messy 
+	- and sometimes you just have a name of a location and you want to translate it to a lat long pos, called geocoding, reverse is reverse geocoding, there are big databases that will let you do that
+	- mostly if you start from lat and long, then these are unique and consistant across systems and you shouldnt have a problem with matching your points and the raster graph
+	- in terms of cleaveland, with maps we often get stuck using colour and size to show mangatude bc we cant really appily the other principals
+	- data at the end points should fade into the background
+	- colourbrewer, is sort of good for choosing colours
+	- representing uncertanties on maps is REALLY hard
+	- issues with mis-representing size, mostly with politics to show that people are concentrated in cities, so its misleading, we should maybe be dealing with population size
+	- can also make it continuous so that you can maybe make regions that are 50/50 then its grey or white so that you can tell who is divided
+	- leaflet is the ggplotly of maps
+	- 
