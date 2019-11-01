@@ -1,0 +1,163 @@
+---
+title: "get maps"
+author: "Alex Bushby, Aleks Jovic, Ben Bolker"
+---
+
+```{r pkgs,message=FALSE}
+library(ggmap)
+```
+
+saving the data so you dont need an internet connection to do work (data actually comes from the package)
+
+when it stores the map it is actually storing different resolutions of pictures or rasters of the area. so its not actually storing all streets as lines
+
+so we can pick whatever zoom and etc that we want. 
+
+It also automatically lets us put points ontop of these maps if we want!
+
+```{r get_data}
+load("data/googlemaps.rda")
+```
+
+## ggmap package
+
+- get raster map tiles from online sources 
+- e.g. digital aerial photographs, satellite imagery, digital pictures, or even scanned maps
+- plotting via `ggplot` extensions
+- also has functions for geolocation and routing.
+
+## getting maps
+
+- first retrieve an underlying *map layer* (raster)
+- various functions to get maps from popular sources: 
+    - Google Maps
+    (open street map is open source, they dont have satalite immagery, it is particularly good for the campus map!)
+	- [OpenStreetMap](https://www.openstreetmap.org/#map=17/43.26435/-79.91770)
+	(stamen is a company that does datviz, they take the openStreetMap data but with pretty asthetics, and this is primary maps that ggmaps uses)
+	- [Stamen Maps](http://maps.stamen.com/#watercolor/12/37.7706/-122.3782)
+
+
+## specify coordinates
+-each of the above mapping things has slightly different ways to specify the zoom and range you want your map to cover. so have to play around with this, different syntax for each database
+-when you want to map you need to specify some things: 
+- usually specify latitude/longitude  
+(negative longitude = west, negative latitude=south, posititive) (mostly for Canada)
+- usually digital (not degrees/minutes/seconds)
+- occasional confusion: (lat,lon) is common in geographic contexts but (lon,lat) is (x,y)
+
+## StamenMap
+get the map
+```{r sm1, cache=TRUE,message=FALSE}
+## specify lat/long bounding box
+mapzone <- c(left = -135, bottom = 25.75, right = -62, top = 75)
+s_map <- get_stamenmap(mapzone, zoom = 5, maptype = "toner-lite")
+## maptype: "terrain", "terrain-background", "terrain-labels", "terrain-lines",
+##  "toner" + etc., "watercolor", ...
+class(s_map)
+#in this map the class is a hierarchy, so its a raster with subclass ggmap
+```
+
+## Plot
+-when this map was downloaded it downloaded 65 little tiles and then stitched it together to make this graph:
+```{r sm2}
+ggmap(s_map)
+```
+
+##  Google maps
+
+Need to sign up for an API key and enable various APIs: go [here](https://cloud.google.com/maps-platform/) and follow *all* the instructions (get an API key, enable maps services, give them credit card info ...)
+Free, but you have to put in credit card info.
+
+Google will give you a key.
+Best way to be able to use it is to make a .Renviron file (like vimrc), so that you can specify the key in this an then you dont have to keep specifying it and you can set it up as a varible so that you can get it.
+
+
+
+```{r gmap,eval=FALSE}
+#so this key is stored in the above mentioned .Renviro file which I do not have on my comp
+register_google(key=Sys.getenv("GOOGLEMAPS_KEY"))
+hamilton_map <- get_googlemap(center=c(lon=-79.91, lat=43.26),
+                       zoom=13, size=c(640,640),
+                       scale=2,maptype='terrain')
+## maptype: 'satellite','roadmap','hybrid'
+```
+
+```{r show_map}
+print(hamilton_map)
+class(hamilton_map)
+```
+
+## plot
+
+```{r plot_gmap}
+ggmap(hamilton_map)
+```
+
+```{r gmap2,eval=FALSE}
+#zoom must be whole number, so a bit finnicky
+#mcmaster satellite map
+#got higher zoom and a satellite image
+mcmaster_map <- get_googlemap(center=c(lon=-79.9192, lat=43.2609),
+                             zoom=15, maptype = 'satellite')
+```
+
+---
+
+```{r plot_gmap2}
+ggmap(mcmaster_map)
+```
+
+---
+
+```{r gmap3,eval=FALSE}
+#you can get as close as the database permits
+#19 is the max zoom and you can get a pretty good pic of the eng building!
+fireball_map <- get_googlemap(center=c(lon=-79.92, lat=43.2609), zoom=19, maptype = 'satellite')
+```
+
+---
+
+```{r plot_gmap3}
+ggmap(fireball_map)
+```
+
+---
+
+## compare stamen
+
+```{r s2,message=FALSE,cache=TRUE}
+fb_mapzone <- c(left = -79.921, bottom = 43.2603, right = -79.919, top = 43.2615)
+## max zoom
+s_map2 <- get_stamenmap(fb_mapzone, zoom = 18, maptype = "watercolor")
+s_map2T <- get_stamenmap(fb_mapzone, zoom = 18, maptype = "toner")
+```
+
+
+```{r plot_s2}
+ggmap(s_map2)
+#so you can see that openStreetMap is not as good, but still gets the point across!
+ggmap(s_map2T)
+```
+
+Oh well ...
+
+## Graph asthetics:
+-so obvi the labels we have these are ugly, you could probs leave them off for a small map bc ppl generally dont
+explain things that way
+-for a big map you could put these on as deg, min, or seconds (which is the actual way of writting things)
+-here this a good justtification to not include labels bc other geographic things can help ppl orient themselves.
+-
+
+
+## more Google maps tricks
+
+```{r more_maps,eval=FALSE}
+## need "geocoding API" enabled
+london_map <- get_googlemap("london england", zoom = 12)
+## Las Vegas!
+## https://en.wikipedia.org/wiki/New_York-New_York_Hotel_and_Casino
+nyny_map <- get_googlemap("newyork newyork", zoom = 12)
+to1_map <- get_googlemap('toronto canada', zoom=12,maptype='satellite')
+## certain zooms work: zoom=12 does, 13 doesn't, 14 doesn't, 15 does
+to2_map <- get_googlemap('toronto canada', zoom=15, maptype='hybrid')
+```

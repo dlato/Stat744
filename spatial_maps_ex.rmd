@@ -1,0 +1,382 @@
+---
+title: "spatial examples"
+author: "Alex Bushby, Aleks Jovic, Ben Bolker"
+---
+IN all these examples we are really just plotting the graphs and NOT talking about the dataviz, so colours are shitty, labels are crap..which map layers do we want...etc..
+
+
+
+```{r pkgs,message=FALSE}
+library(ggmap)
+library(tidyverse)
+library(viridis)
+library(sf)
+#not actully using, but can be useful for having different data
+library(geogrid)
+library(gganimate)
+if (!require(transformr,quietly=TRUE)) {
+  warning("animation example might not work; ",
+          "consider running ",
+          "'remotes::install_github(\"thomasp85/transformr'\")")
+}
+#like plotly but for maps, makes interactive maps
+library(leaflet)
+#need to download this from github so we have it without any internet (and so it does not take so long to download)
+load("data/googlemaps.rda")
+```
+
+# crime
+
+
+The `crime` dataset contains crime reports for Houston from January-August 2010, geocoded with Google Maps.
+if you enabled this on googlemaps you could also get this info
+```{r showcrime}
+#showing what this dataframe looks like
+tibble(crime)
+```
+Lots of useful info: dates, types of crimes, locations by type of place, locations by street, locations by longitude/latitude ...
+
+First, let's get an overview of the crimes on the map. The `qmplot` is often recommended as a quick way to do mapping (but we will switch to another approach shortly). We put in longitude (`lon`) and latitude (`lat`) for the `x` and `y` parameters and specify `crime` as the data set. This plots all of the crimes in the database.
+
+(Example adapted from [here](https://github.com/tidyverse/ggplot2/wiki/crime-in-downtown-houston,-texas-:-combining-ggplot2-and-google-maps).)
+
+```{r qmplot,message=FALSE}
+q1 <- qmplot(lon, lat, data = crime,
+             maptype = "toner-lite",
+             ## for q* plots need to use I() for direct specifications
+             #usually sets the below as asthetics, so we need to specify I() so that it tells it "leave this as is"
+             #and do not make it an asthetic
+             colour = I("red"),
+             size = I(0.9),
+             alpha=I(.3))
+
+q1
+```
+
+we dont like qplot so we are probs not doing to do it, mostly bc every time you issue a new qm plot it downloads it every time, which is slow. so this is not ideal
+
+A slightly slower but safer method is to get the map first, then combine it with the data. This way we can retrieve the map and store it; this is both more efficient if we're going to make a bunch of plots with the same map (almost inevitable if we're polishing a data visualization), and safer (in case the server goes down/network connection is lost/etc.).
+
+below is slightly harder way, but less annoying to have to grab the graphs each time
+```{r houston1,message=FALSE}
+#write function that will get the lat and long of whatever in the left right bottom top of what we need for 
+## utility function: extract appropriate components for retrieving a Stamen/OSM map
+get_mapzone <- function(data, latcol="lat", loncol="lon") {
+  lon <- na.omit(data[[loncol]])
+  lat <- na.omit(data[[latcol]])
+  return(c(left=min(lon),right=max(lon),bottom=min(lat),top=max(lat)))
+}
+houston_mz <- get_mapzone(crime) ## find boundaries
+## retrieve map
+houston_map1 <- get_stamenmap(houston_mz,zoom=7, maptype="toner-lite",
+                              messaging=FALSE)
+```
+
+Now we can combine the map with the data set:
+
+```{r houston2}
+#have a map and lay this down first
+(ggmap(houston_map1)
+ #and now we can do everything else in ggplot and just put stuff on top of it!
+  + geom_point(data=crime,colour="red",size=0.9,alpha=0.3)
+)
+```
+
+This graph is not very good, in particular because of the few crimes that are reported far away from the city but still end up in the database.
+
+
+Reduce crime to violent crimes in downtown Houston:
+
+```{r violent_crime}
+#did some filtering and looking at only violent crimes in downtown
+violent_crime <-
+  (crime
+    %>% filter(
+      #removing these crimes
+          !offense %in% c("auto theft", "theft", "burglary"),
+          -95.39681 <= lon & lon <= -95.34188,
+          29.73631 <= lat & lat <=  29.78400
+        )
+    %>% mutate(
+          ## drops unused levels, mitigates downstream errors
+          offense = fct_drop(offense), 
+          offense = fct_relevel(offense,
+               c("robbery", "aggravated assault", "rape", "murder")
+               )
+        )
+  )
+violent_crime
+```
+
+
+```{r vc1,warning=FALSE}
+houston_map2 <- get_stamenmap(get_mapzone(violent_crime), maptype="toner-lite",
+                              zoom=14,messaging=FALSE)
+(ggmap(houston_map2)
+  + geom_point(data = violent_crime, colour = "red",size = 0.9, alpha=.3)
+)
+```
+
+It does a good job at keeping aspect ratio the same.
+
+Above is not very exciting and is kind of a bad way to plot the stuff
+
+
+Re-use the map, plotting as density contours instead (i.e., transform the points to a density field, then summarize the density field as a set of contours)
+
+OOHHHHH so basically it converts lat and long into x and y so that we can use ggplot and then make really cool things like transformations...etc!!!
+
+```{r vc2}
+(ggmap(houston_map2)
+  + geom_density2d(data = violent_crime, aes(x=lon,y=lat), col="red")
+)
+```
+
+Or do 2-D (square) binning, with a custom gradient (and log-scaled breaks):
+
+```{r vc3}
+(ggmap(houston_map2)
+ #geombin2d makes a square histogram, a 2D hist
+  + geom_bin2d(data = violent_crime, alpha=0.5)
+  + scale_fill_gradient(low="#F0F0FF", high="#131393",
+                        #log transformed the colour scale so it changes
+                        #still not really good bc then one high crime area was really throwing off the colour
+                        #so densities before might have been better
+                        #again use a scale that fades to white so that lower crime areas fade into the background
+                        trans=scales::log10_trans())
+)
+```
+
+The high-density square on Smith Street is messing up our ability to see much else.
+
+## Heatmap
+
+To make the contour map more useful, we can assign a gradient (using a "polygon" rather than a "density_2d" geom with `stat_density_2d`) . Let’s look at the robberies:
+
+```{r vc4}
+## "background" rather than "lite" map
+houston_map3 <- get_stamenmap(get_mapzone(violent_crime),
+                              maptype="toner-background",
+                              zoom=14)
+```
+
+```{r vc5}
+robbery <- violent_crime %>% filter(offense=='robbery')
+(ggmap(houston_map3)
+  #computing a density, (2D kernal density estimation)
+  #normally this does contour lines, but here we are asking it to do fill colour with white to red which makes this look much nicer
+  #heat map basically
+  + stat_density_2d(data=robbery,
+                    aes(fill = ..level..), geom = "polygon",
+                    alpha = .35, colour = NA)
+  + scale_fill_gradient2("Robbery\nheatmap",
+                         low = "white", mid = "yellow",
+                         high = "red", midpoint = 650)
+)
+```
+Still need to work on this bc the scale is not human readable but pretty cool!
+
+
+We can do all the other `ggplot` stuff, like faceting:
+
+scale = "free" in facet we think will make it vary and NOT have the same scale for all the facets.
+can also change x and y to be free
+this might be hard when you have these rasters in place...who knows!
+
+```{r facet1}
+(ggmap(houston_map3,darken=c(0.9,"white")) ## fade map layer
+  + geom_point(data = violent_crime, aes(colour = offense, size=offense))
+  + facet_wrap(~ offense)
+  + scale_colour_brewer(palette="Dark2")
+  + scale_size_manual(values=c(1,1,2,3)) ## adjust point sizes for visibility
+  + theme(legend.position="none")
+)
+```
+
+```{r weekday_facets}
+#combining the heat map with a day of week facet
+hm <- ggmap(houston_map3, base_layer = ggplot(aes(x = lon, y = lat),
+                                              data = violent_crime),
+            darken=c(0.9,"white"))
+(hm
+  + stat_density2d(aes(fill = ..level.., alpha = ..level..),
+                bins = 5, geom = "polygon")
+  + scale_fill_gradient(low = "black", high = "red")
+  + facet_wrap(~ day)
+  + theme(legend.position="none")
+)
+```
+
+So crimes happen in different places depending on the days of the week!
+
+used colour and alpha asthetic so it helps fade things out near the end, so colour is red -> black, and alpha goes from opaic -> transparent, so really our colour is going red -> grey -> white when we combin those two
+
+(there are some contouring artifacts here I don't understand ...)
+
+This is pretty but maybe not useful ...
+
+```{r crime_density}
+#tried to overlay the different crimes ontop of eachother,
+#doing bivariate gaussian kernal and counting them by number of events and then weighing it by that much
+
+(hm
+  + stat_density2d(aes(x = lon, y = lat, fill = offense, alpha = ..level..),
+                   bins = 5, geom = "polygon")
+  + scale_fill_brewer(palette="Dark2")
+  
+)
+```
+
+There is not a super-easy way to code scales (we'd like 29.75 to be $29^\circ 45' N$, e.g. see [here](https://stackoverflow.com/questions/33302424/format-latitude-and-longitude-axis-labels-in-ggplot) for a partial solution), but maybe we don't even need them on a map?
+
+# Canadian electoral ridins
+
+From [this github site](https://github.com/paleolimbot/blogdown-site/tree/master/content/post/2019-10-21-ridings):
+
+The riding boundaries come in shapefile format, which is handled by a one-liner to `read_sf()`. I'm going to simplify the boundaries a bit to speed up the plotting time. The `dTolderance` argument is in map units, and it took some experimenting to settle on the number 100.
+
+```{r}
+#this is just reading in the shape file
+#typically you can just point to read_sf to the directory and then it will automatically grab whatever it needs from there!
+#yay technology!
+
+#the last col of this tibble is actually info about to polygons and boundaries of the actual ridings! cool!
+ridings <- (read_sf("data/boundaries_2015_shp_en/FED_CA_2_2_ENG.shp")
+            #sometimes you have a boundary file with lots of little small wiggles in it, and usually we dont need thos,
+            #so this is taking these little wiggles and smooths them a bit to make less line segments, simpilifies
+            #so taking say a 500 sided polygon and making it a 50 sided polygon
+  %>% st_simplify(dTolerance = 100)
+)
+```
+
+```{r}
+(ggplot(ridings)
+ #simple features geometry, passing our map right to ggplot!
+  + geom_sf(aes(fill = PROVCODE))
+ #get rid of ALL the axis and everything
+  + theme_void()
+)
+#file that took super long to compute
+#this is bc its tiling this with a bunch of hexes, and then figuring out the association of each hex with a riding (takes ~45min)
+fn <- "data/ridings_hex.rds"
+if (file.exists(fn)) {
+  ridings_hex <- read_rds(fn)
+} else {
+  cat("SLOW computation coming up!\n")
+  print(system.time({
+    ridings_grid <- ridings %>%
+      calculate_grid(grid_type = "hexagonal", seed = 1938)
+    ridings_hex <- assign_polygons(ridings, ridings_grid)
+    write_rds(ridings_hex, fn)
+  }))
+}
+```
+
+```{r}
+fix_fun <- function(x,label) {
+  (x
+   #so now we are trying to put two things together but there are some slight issues we need to fix
+   #below will get rid of projection
+    %>% st_set_crs(NA)
+   #only interested in province code and boundaries
+    %>% dplyr::select(PROVCODE,geometry)
+    %>% mutate(type=label)
+  )
+}
+#now make a list of the two dataframes, one with orig ridings, and one with hex ridings
+ridings_list <- list(geographic=ridings,hex=ridings_hex)
+#map is like lapply
+purrr:::map(ridings_list,st_crs)
+#take each dataset, get rid of projection, add cols and lable that we told you to
+ridings_combined <- purrr::map2(ridings_list, names(ridings_list), fix_fun)
+## dplyr::bind_rows doesn't work: https://github.com/tidyverse/dplyr/issues/2457
+ridings_combined <- do.call(rbind,ridings_combined)
+```
+
+```{r make_anim}
+#can now facet it by type
+rplot <- ggplot(ridings_combined) +
+  geom_sf(aes(fill = PROVCODE)) +
+  theme_void()
+rplot+ facet_wrap(~type)
+#making an animation that will go btwn the two graphs in the previous this
+rplot_anim <- (rplot
+  + transition_states(type, transition_length = 1, state_length = 5)
+)
+```
+
+```{r anim,eval=FALSE}
+#wil jump between the two previous graphs, the hex one and the original one
+animate(rplot_anim, width = 700, height = 700, res = 96)
+anim_save("pix/ridings.gif")
+```
+
+![](pix/ridings.gif)
+
+## dog licenses
+
+NYC zip codes [here](https://data.cityofnewyork.us/widgets/i8iw-xf4u)
+
+```{r}
+zc <- read_sf("data/nyc_zipcodes")
+dogs <- (read_csv("data/NYC_dogs.csv")
+         #rename things that make more sense and grabbing a subset
+  %>% rename(zipcode="Owner Zip Code",name="Animal Name",
+             gender="Animal Gender",breed_1="Primary Breed",
+             color="Animal Dominant Color")
+  #change to a character so that it works with the shape file, and does NOT drop the zeros at the beginning of the number
+  %>% mutate(zipcode=sprintf("%05d",zipcode))
+  %>% select(zipcode,name,gender,breed_1,color)
+)
+z_rottie <- (dogs
+  %>% group_by(zipcode)
+  #looking for total number of Rotwilers
+  %>% summarise(tot=sum(stringr::str_detect(breed_1,"[Rr]ott")),
+                tot_dogs=n(),
+                frac=tot/n())
+)
+#joining dataset with zipcode number and dataset with boundaries of zipcode, and sticking them together
+z_dogs  <- full_join(z_rottie,zc,by=c("zipcode"="ZIPCODE"))
+(ggplot(z_dogs)
+  #plot with fill so we can see whats happening
+  + geom_sf(aes(fill = frac,alpha=tot_dogs, geometry=geometry))
+  + theme_void()
+  + scale_fill_gradient(low="white",high="brown",
+                        trans=scales::logit_trans())
+)
+```
+
+* superimpose on a map, possibly clipped?
+
+## leaflet
+
+* super-easy to generate maps
+* adding points etc. 
+* choropleth example: https://rstudio.github.io/leaflet/choropleths.html
+
+Quick Houston-crime example:
+
+this is a dnamic object so cool!
+be aware that the boundary you defined will only show that even when someone zooms out.
+
+with leaflet we are kind of back to doing things the old way in that we have a command for the polygons, or adding pts...etc
+```{r houston_leaflet}
+#here we need to turn the dataframe from before into a sf object and tell it what columns the coords are in
+#before with ggmap we could just pass it a df as long as it had a lat and long
+leaflet(st_as_sf(violent_crime,coords=c("lon","lat"))) %>%
+  setView(-95.35,29.75,zoom=13) %>%
+  addTiles() %>%
+  #making circle markers and using long and lat by defaut
+  addCircleMarkers(radius=5)
+#could also give it a vector of colours and then it will plot those colours
+```
+
+## additional challenges
+
+- ggplot is to ggplotly as ggmap is to (???) + leaflet
+- syncing various layers (lat/lon to ????)
+- transforming *irregular* points with continuous values 
+    - `akima`
+	- kriging? Gaussian processes?
+	- fit surface with `mgcv` package then overlay?
+- multivariate/compositional responses: `scatterpie` package. (Mini-bars?)
