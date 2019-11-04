@@ -1,0 +1,114 @@
+---
+title: "Stats744: HW7"
+output: html_document
+header-includes: \usepackage{xspace, longtable, booktabs, tikz, tik-cd, graphicx, pgfplots}
+---
+
+\newcommand{\ecol}{\textit{E.\,coli}\xspace}
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(htmlwidgets)
+theme_set(theme_bw() + theme(strip.background =element_rect(fill="#e7e5e2")) +
+            theme(strip.text = element_text(size =10)) +
+            #theme(plot.title = element_text(hjust = 0.5), 
+            theme(plot.title = element_text(), 
+                  panel.background = element_rect(fill = "white", colour = NA), 
+                  panel.grid.major = element_line(colour = "grey90", size = 0.2), 
+                  panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
+                  panel.spacing = unit(0.25, "lines"), 
+                  axis.text=element_text(size=10),
+                  legend.position="top") 
+)
+```
+
+## Interactive Graph
+
+### The Data
+
+I will be once again working with my thesis data.
+I have normalized gene expression values for all genes in the \ecol
+genome.
+This data has been previously normalized using the standard \texttt{DeSeq2} pipeline to be in Counts Per Million (CPM).
+The bacteria was grown under normal conditions, meaning that there was no stressful environment, limiting resources, or comeptition.
+This gene expression data is also associated with the genomic distance from the oirgin of replication.
+The midpoint between the protein coding start and end of each gene was chosen as a singular genomic position for that gene.
+This was to decrease the complexity of genes with overlapping genomic positions and having an expression value assoicated with a range of positions.
+Each gene was calibrated so that position 0 is the origin of replication and numbering proceeds in both directions until the termins of replication is reached.
+This accounts for the bidirectional replication that happens in bacteria.
+
+*****INSERT LINK TO FIG HERE *************
+
+See [this figure]() for more details.
+
+The overall goal of this portions of my thesis is to see how (if) gene expression varies across the genome.
+We expect that genes that are important to the survival of the organism are located near the origin of replication, where there are less replication errors and genes can benefit from increased dosage.
+These genes should therefore, have increased expression.
+Genes that are located near the terminus of replication are typically accessory genes used for local environmental adaptaion, and therefore should not be as highly expressed.
+
+The goal of the following graphic is to display the distribution of genes bidirectionally around the chromosome of \ecol
+and thier respective expression levels.
+
+```{r read in data}
+############################################
+#read in data
+exp_data <- read.table("bidirectional_data.csv", sep = "\t")
+head(exp_data)
+#re-scale position
+exp_data$tmp_pos <- exp_data$tmp_pos / 1000000
+############################################
+```
+
+### The Graph
+
+```{r plot}
+############################################
+#mytitle <- substitute(italic(bac_name)~replicon, list(bac_name=bac_name, replicon=replicon))
+#bac_name <- "E.coli"
+mytitle <- substitute(italic(bac_name)~replicon, list(bac_name="E.coli", replicon="Chromosome"))
+#mytitle <- substitute(<i>bac_name</i>~replicon, list(bac_name="E.coli", replicon="Chromosome"))
+test_title <- "<i>E.coli</i> Chromosome"
+#scatter plot
+scat <- (exp_data
+         %>% highlight_key(~Id)
+         %>% ggplot(aes(tmp_pos, Exp, group=Id)) 
+         + ggtitle(test_title)
+#         + ggtitle(mytitle)
+         + geom_point(alpha = 0.5)
+#         + labs(title = mytitle)
+         + ylab("Expression (CPM)")
+         + xlab("Bidirectional Genomic Position (Mbp)")
+         + scale_y_log10()
+)
+#warning because of zero expression values changed on a log scale
+
+#interactive
+inter_scat <- (scat
+  %>% ggplotly(tooltip="group")
+       #%>%  layout(title = "<i>E.coli</i> Chromosome",
+       %>%  layout(
+                   margin = list(b = 50, l = 50)) # to fully display the x and y axis labels
+  %>% highlight(on="plotly_hover",
+                off=NULL,
+                color="#0083FF")
+)
+inter_scat
+```
+
+
+### Discussion
+
+Overall, I think the the graph has readable font size, a good aspect ratio, and appropriate point size.
+With respect to the cleavland hierarchy, I am showing data as position along a common scale, which is what humans are best at distinguishing.
+
+I chose to anchor the the x-axis at zero because this denotes the beginning of the origin of replication, so it makes sense for there to be an anchor at zero.
+I additionally chose to scale the numbers on the x-axis to ensure that they were easier to read by dividing them by 1,000,000bp.
+Typically genomes are discussed in terms of Millions of base pairs (Mbp) so this was an appropriate number to choose.
+For the y-axis, I chose a log scale.
+Majority of the genes in the genome will not be highly expressed and have values of 100 CPM or lower.
+However, there are some genes that are extremely highly expressed, these are often genes encoding for proteins that are involved in replication and repair like riboproteins.
+These proteins need to be produced to help with important housekeeping functions like cell metabolism or cell division.
+It therefore makes sense that some of these genes are highly expressed.
+With such a large range in expression values, a log base 10 scale was the best choice to show all the data points, while still allowing to see changes between majority of the genes that would have be squished near the x-axis on a linear scale.
+
