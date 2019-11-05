@@ -32,21 +32,21 @@ I will be once again working with my thesis data.
 I have normalized gene expression values for all genes in the \ecol
 genome.
 This data has been previously normalized using the standard DeSeq2 pipeline to be in Counts Per Million (CPM).
-The bacteria was grown under normal conditions, meaning that there was no stressful environment, limiting resources, or comeptition.
-This gene expression data is also associated with the genomic distance from the oirgin of replication.
+The bacteria was grown under normal conditions, meaning that there was no stressful environment, limiting resources, or competition.
+This gene expression data is also associated with the genomic distance from the origin of replication.
 The midpoint between the protein coding start and end of each gene was chosen as a singular genomic position for that gene.
-This was to decrease the complexity of genes with overlapping genomic positions and having an expression value assoicated with a range of positions.
-Each gene was calibrated so that position 0 is the origin of replication and numbering proceeds in both directions until the termins of replication is reached.
+This was to decrease the complexity of genes with overlapping genomic positions and having an expression value associated with a range of positions.
+Each gene was calibrated so that position 0 is the origin of replication and numbering proceeds in both directions until the terminus of replication is reached.
 This accounts for the bidirectional replication that happens in bacteria.
 See [this figure](https://github.com/dlato/Stat744/blob/master/bidir_rep_fig.pdf) for more details.
 
 The overall goal of this portions of my thesis is to see how (if) gene expression varies across the genome.
 We expect that genes that are important to the survival of the organism are located near the origin of replication, where there are less replication errors and genes can benefit from increased dosage.
 These genes should therefore, have increased expression.
-Genes that are located near the terminus of replication are typically accessory genes used for local environmental adaptaion, and therefore should not be as highly expressed.
+Genes that are located near the terminus of replication are typically accessory genes used for local environmental adaptation, and therefore should not be as highly expressed.
 
 The goal of the following graphic is to display the distribution of genes bidirectionally around the chromosome of \ecol
-and thier respective expression levels.
+and their respective expression levels.
 
 ```{r read in data}
 ############################################
@@ -91,7 +91,7 @@ inter_scat
 ### Discussion
 
 Overall, I think the the graph has readable font size, a good aspect ratio, and appropriate point size.
-With respect to the cleavland hierarchy, I am showing data as position along a common scale, which is what humans are best at distinguishing.
+With respect to the Cleveland hierarchy, I am showing data as position along a common scale, which is what humans are best at distinguishing.
 
 I chose to anchor the the x-axis at zero because this denotes the beginning of the origin of replication, so it makes sense for there to be an anchor at zero.
 I additionally chose to scale the numbers on the x-axis to ensure that they were easier to read by dividing them by 1,000,000bp.
@@ -107,12 +107,12 @@ Additionally, my axis labels are informative and contain units.
 With respect to colour, I kept the colour simple with black for the background points and blue for the "hover" point colour.
 I chose blue so that it would be colour-blind friendly and easy to distinguish from black when a point was hovered over.
 Since there are about 3500 data points, I decided to use slightly transparent points so that most of the points could still be seen when looking at the graph without using the interactive graphics.
-I chose the specific transparancy because I still wanted to highlight the fact that bacterial genomes often have genes that overlap partially or completely because they are extremely space efficent creatures when it comes to their genomes!
-So, I wanted an transparent value that would still allow for sections of the graph to be densly coloured with these overlapping genes, but still for the most part have all points visible.
+I chose the specific transparency because I still wanted to highlight the fact that bacterial genomes often have genes that overlap partially or completely because they are extremely space efficient creatures when it comes to their genomes!
+So, I wanted an transparent value that would still allow for sections of the graph to be densely coloured with these overlapping genes, but still for the most part have all points visible.
 
 One of the benefits of interactive graphics is that the user is able to zoom in on any area of the graph they wish.
 So, segments of the genome that do have high gene density can be zoomed in on and looked at in more detail until the overlap is reduced.
-My main reason for making this simple scatterplot interactive is that it is biologically interesting.
+My main reason for making this simple scatter plot interactive is that it is biologically interesting.
 People are often interested in genes that have very high or very low gene expression.
 With this interactive graph, users can hover over any expression value and get the gene Id that is associated with this gene.
 This Id can then be searched in [NCBI](https://www.ncbi.nlm.nih.gov/gene/) to find out more about that gene like what protein product it makes, the length, and non-bidirectional genomic location.
@@ -160,7 +160,7 @@ fusA_altplot
 ```
 
 
-This gene encodes an elongation factor which facilitates the translocation of teh ribosome and is essential for DNA replication.
+This gene encodes an elongation factor which facilitates the translocation of the ribosome and is essential for DNA replication.
 Therefore, it makes sense that it is one of the most highly expressed genes in the genome!
 This would be particularly interesting for gene expression experiments performed under stressful conditions.
 You could easily see which genes were highly expressed in one treatment compared to another (with the help of some differential gene expression analysis) and highlight these genes on the graph.
@@ -170,7 +170,7 @@ You could easily see which genes were highly expressed in one treatment compared
 I thought it would be really neat if I could colour the genes based on their protein product.
 For example, most genes are annotated by COG categories which tell you about the function of those genes such as Translation, Cell Motility, and Replication and Repair.
 It would be cool to have this information associated with each gene and then be able to have the user select and highlight all genes from one COG category to see how they are dispersed across the genome as well as their associated gene expression.
-Unfortunatly, I would have to do a bit more analysis and Python coding to obtain this information and add it to my dataset.
+Unfortunately, I would have to do a bit more analysis and Python coding to obtain this information and add it to my data set.
 I also think it would be neat to add on a search bar where the user could specify a particular gene, and then highlight that on the graph.
 I think that I would need to develop a shiny app in order to do this, but it would be really useful for people who study a particular gene or set of genes and they wanted to see where they fall relative to the origin of replication and what their associated gene expression value is.
 
