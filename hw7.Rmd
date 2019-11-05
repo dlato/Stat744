@@ -38,10 +38,7 @@ The midpoint between the protein coding start and end of each gene was chosen as
 This was to decrease the complexity of genes with overlapping genomic positions and having an expression value assoicated with a range of positions.
 Each gene was calibrated so that position 0 is the origin of replication and numbering proceeds in both directions until the termins of replication is reached.
 This accounts for the bidirectional replication that happens in bacteria.
-
-*****INSERT LINK TO FIG HERE *************
-
-See [this figure]() for more details.
+See [this figure](https://github.com/dlato/Stat744/blob/master/bidir_rep_fig.pdf) for more details.
 
 The overall goal of this portions of my thesis is to see how (if) gene expression varies across the genome.
 We expect that genes that are important to the survival of the organism are located near the origin of replication, where there are less replication errors and genes can benefit from increased dosage.
@@ -142,6 +139,7 @@ fusA_altplot <- (exp_data
 #warning because of zero expression values changed on a log scale
 fusA_altplot
 
+#tried to get it working with gghighlight...
 #I tried to get the point in the graph to be the same colour as my interactive graph but I could not figure out how to do it in gghighlight
 #fusA_plot <- (exp_data
 #         %>% ggplot(aes(tmp_pos, Exp, group=Id)) 
