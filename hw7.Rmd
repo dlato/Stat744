@@ -10,6 +10,7 @@ library(dplyr)
 library(ggplot2)
 library(plotly)
 library(htmlwidgets)
+library(gghighlight)
 theme_set(theme_bw() + theme(strip.background =element_rect(fill="#e7e5e2")) +
             theme(strip.text = element_text(size =10)) +
             #theme(plot.title = element_text(hjust = 0.5), 
@@ -64,19 +65,13 @@ exp_data$tmp_pos <- exp_data$tmp_pos / 1000000
 
 ```{r plot}
 ############################################
-#mytitle <- substitute(italic(bac_name)~replicon, list(bac_name=bac_name, replicon=replicon))
-#bac_name <- "E.coli"
-mytitle <- substitute(italic(bac_name)~replicon, list(bac_name="E.coli", replicon="Chromosome"))
-#mytitle <- substitute(<i>bac_name</i>~replicon, list(bac_name="E.coli", replicon="Chromosome"))
-test_title <- "<i>E.coli</i> Chromosome"
+mytitle <- "<i>E.coli</i> Chromosome"
 #scatter plot
 scat <- (exp_data
          %>% highlight_key(~Id)
          %>% ggplot(aes(tmp_pos, Exp, group=Id)) 
-         + ggtitle(test_title)
-#         + ggtitle(mytitle)
+         + ggtitle(mytitle)
          + geom_point(alpha = 0.5)
-#         + labs(title = mytitle)
          + ylab("Expression (CPM)")
          + xlab("Bidirectional Genomic Position (Mbp)")
          + scale_y_log10()
@@ -86,7 +81,6 @@ scat <- (exp_data
 #interactive
 inter_scat <- (scat
   %>% ggplotly(tooltip="group")
-       #%>%  layout(title = "<i>E.coli</i> Chromosome",
        %>%  layout(
                    margin = list(b = 50, l = 50)) # to fully display the x and y axis labels
   %>% highlight(on="plotly_hover",
@@ -125,7 +119,49 @@ My main reason for making this simple scatterplot interactive is that it is biol
 People are often interested in genes that have very high or very low gene expression.
 With this interactive graph, users can hover over any expression value and get the gene Id that is associated with this gene.
 This Id can then be searched in [NCBI](https://www.ncbi.nlm.nih.gov/gene/) to find out more about that gene like what protein product it makes, the length, and non-bidirectional genomic location.
-For example, the gene located roughly at position (0.5 Mbp, 10000 CPM) is gene fusA.
+For example, the gene in the graph below is gene fusA.
+```{r example_gene}
+#colouring just fusA
+fusA <- which(exp_data$Id == "fusA")
+ex_gene_colours <- rep("#D2D1D6", length(exp_data$Id))
+ex_gene_colours[fusA] <- "#0083FF"
+newtitle <- substitute(italic(bac_name)~replicon, list(bac_name="E.coli", replicon="Chromosome"))
+
+#plot
+fusA_altplot <- (exp_data
+         %>% ggplot(aes(tmp_pos, Exp, group=Id)) 
+         + ggtitle(newtitle)
+         + geom_point(colour = ex_gene_colours)
+         + ylab("Expression (CPM)")
+         + xlab("Bidirectional Genomic Position (Mbp)")
+         + scale_y_log10()
+         + scale_color_manual(values=c("#0083FF","#D2D1D6"))
+         #cheated a bit here but it worked!
+         + annotate(geom = "text", x = 0.5, y = 10000, label = "fusA", hjust = "left", colour = "#0083FF")
+)
+#warning because of zero expression values changed on a log scale
+fusA_altplot
+
+#I tried to get the point in the graph to be the same colour as my interactive graph but I could not figure out how to do it in gghighlight
+#fusA_plot <- (exp_data
+#         %>% ggplot(aes(tmp_pos, Exp, group=Id)) 
+#         + ggtitle(newtitle)
+#         #+ geom_point(alpha = 0.1)
+#         + geom_point()
+#         + ylab("Expression (CPM)")
+#         + xlab("Bidirectional Genomic Position (Mbp)")
+#         + scale_y_log10()
+#         #tried to get the point to be the same colour as in my interactive graph, failed.
+#         #+ scale_color_manual(values=c("#0083FF","#D2D1D6"))
+#         + gghighlight(Id %in% c("fusA"), 
+#                  label_key = Id)
+#)
+##warning because of zero expression values changed on a log scale
+#fusA_plot
+
+```
+
+
 This gene encodes an elongation factor which facilitates the translocation of teh ribosome and is essential for DNA replication.
 Therefore, it makes sense that it is one of the most highly expressed genes in the genome!
 This would be particularly interesting for gene expression experiments performed under stressful conditions.
