@@ -437,4 +437,47 @@ Spatial Data Visualization:
 	- issues with mis-representing size, mostly with politics to show that people are concentrated in cities, so its misleading, we should maybe be dealing with population size
 	- can also make it continuous so that you can maybe make regions that are 50/50 then its grey or white so that you can tell who is divided
 	- leaflet is the ggplotly of maps
+
+Nov 5, 2019: Visualizing High Dimensional Data
+	- tourr, rggobi, factoextra, pheatmap: all packages used for this.
+	- rggobi is probs gonna be hard to instal
+	- high dimensional we mean LOTS of variables
+	- might not be predictors and response, could just be loads of variable or measurements we took
+	- i.e. characteristics of houses and say sale price isnt special
+	- we need a low dimensional way of recognizing structure in this lots of data
+	- clustering is an easy way
+	- we could be trying to do exploratory graphics, fit giant network like model, or we could be trying to tell a story
+	- mostly we are focusing on exploratory, bc once we have a story, we already have it distilled to a low dimensional thing
+	- simplest frame is if everything is numeric (no categories) and euclidean distance is the best way to show distance btwn our data, most of the stuff we will be using will be using euclidian distances and lots of lin alg and we can sometimes also say stuff about stats
+	- if we have categories then it gets hard, could facet or colour the pts based on categories, if there are few of them, but if we have lots....then it gets hairy
+	- could represent they numerically by making them into dummy variables ie. making a vector for each category and then say 0 or 1 if that point was in that variable
+	- but need to be careful with the stats later
+	- random forest is usually best way, but hard to visualize
+	- i.e. species diversity is NOT-euclidian distance explained
+	- paper Buja, Cook, and Swayne (1996) discribe 3 ways we could plot high dimensional data
+		- scatter plot: each observation is a point (that could have multiple variables)
+		- trace: a line for each observation (that could have multiple variables), each pt on the line is the value for a variable in an individ, so one jagged line represnts all the variables for ONE individual, and then you have multiple lines for each individual, order of variables on x-axis is tricky, bc you could get wildly different plots just by re-ordering the variables here. Can make this smooth by Andrews plot which takes a fourrier transformation
+		- glyph: or radar plot, where you basically take the trace and connect all the pts in a "circle" so you can see a little shape for each individual, then you can also put that on a graph, so one symbol represents all the values of a particular observation. so each scale for each variable is a straight line, making like a star, then you have pts on each line and connect them and it kind of looks like a spider web
+			- bc humans are good at recognizing faces, we can also put these glyphs into a face shape so that humans are good at recognizing that, no one really uses this in practice bc its a bit weird
+	- so usually with high dimensional data you want to either:
+		- follow an individual, through all the stuff to see where they are. can use this by interactive graph where if you highlight on one graph then it will also highlight on another graph btwn two other variables (laser data ex)
+		- make lots of comparison charts with different individs or scenarios
+		- animation
+	- rggobi is cool and lets you do all those things! but again is hard to install
+	- if we can rotate it in 3D then we are maybe more likely to understand it, or can make some sort of surface and then we can do stuff with that info
+	- tour package/tours: smooth sequence of projection matricies, so we can make sure we get all the "combos" in the n-dimensional space, can then make an animation that will go through all the possible views of this data and then you can make an animation or pause on one view that you like and think makes sense
+	- heatmap is pretty good bc it does some hicherarchial clustering to put things that are similar together
+	- could take correlations btwn all pairwise variables and then just plot that, so simplifying your data is always good
+	- cluster to see if there is a combo of your variables that would make a good way to reduce dimensions
+	- blocks in heat map mean that there is a cluster of correlated events
+	- eigenvectors and values of a correlation matrix is basically what PCA is
+	- if we have less observations than variables, then we do a fancy singular value decomp to help reduce this, pretty automatic with the comp
+	- factoextra package is a good way to visualize pca automatically pretty well!
+	- directions in a PCA are kind of arbirtary, should really look at the length of the vectors
+	- how strongly you can interpret the results of PCA depend on normality a bit
+	- summaray stats are usually going to be farther from a pt than the normality than the original observations (??)
+	- *** important to use coord fix and to use equal axis to interpret the PCA properly
+	- ellipses are a way to represents groups, but not really the best way sometimes
+	- can make bigger shapes that are not ellipse, but still captures the data and how it is varied
+	- PCA is most common projection method, think about if it makes sense for your data
 	- 
