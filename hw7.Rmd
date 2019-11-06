@@ -1,10 +1,10 @@
 ---
 title: "Stats744: HW7"
+fontsize: 12pt
 output: html_document
-header-includes: \usepackage{xspace, longtable, booktabs, tikz, tik-cd, graphicx, pgfplots}
+header-includes: \usepackage{xspace, longtable, booktabs}
 ---
 
-\newcommand{\ecol}{\textit{E.\,coli}\xspace}
 ```{r setup, include=FALSE}
 library(dplyr)
 library(ggplot2)
@@ -24,13 +24,14 @@ theme_set(theme_bw() + theme(strip.background =element_rect(fill="#e7e5e2")) +
 )
 ```
 
+\newcommand{\ecol}{\textit{E.\,coli}\xspace}
+
 ## Interactive Graph
 
 ### The Data
 
 I will be once again working with my thesis data.
-I have normalized gene expression values for all genes in the \ecol
-genome.
+I have normalized gene expression values for all genes in the *E.coli* genome.
 This data has been previously normalized using the standard DeSeq2 pipeline to be in Counts Per Million (CPM).
 The bacteria was grown under normal conditions, meaning that there was no stressful environment, limiting resources, or competition.
 This gene expression data is also associated with the genomic distance from the origin of replication.
@@ -40,12 +41,14 @@ Each gene was calibrated so that position 0 is the origin of replication and num
 This accounts for the bidirectional replication that happens in bacteria.
 See [this figure](https://github.com/dlato/Stat744/blob/master/bidir_rep_fig.pdf) for more details.
 
-The overall goal of this portions of my thesis is to see how (if) gene expression varies across the genome.
+The overall goal of this portion of my thesis is to see how (if) gene expression varies across the genome.
 We expect that genes that are important to the survival of the organism are located near the origin of replication, where there are less replication errors and genes can benefit from increased dosage.
 These genes should therefore, have increased expression.
 Genes that are located near the terminus of replication are typically accessory genes used for local environmental adaptation, and therefore should not be as highly expressed.
 
-The goal of the following graphic is to display the distribution of genes bidirectionally around the chromosome of \ecol
+For this assignment, I will be showing an exploratory graphic and not really commenting on how gene expression varies across the genome.
+
+The goal of the following graphic is to display the distribution of genes bidirectionally around the chromosome of *E.coli*
 and their respective expression levels.
 
 ```{r read in data}
@@ -108,7 +111,7 @@ With respect to colour, I kept the colour simple with black for the background p
 I chose blue so that it would be colour-blind friendly and easy to distinguish from black when a point was hovered over.
 Since there are about 3500 data points, I decided to use slightly transparent points so that most of the points could still be seen when looking at the graph without using the interactive graphics.
 I chose the specific transparency because I still wanted to highlight the fact that bacterial genomes often have genes that overlap partially or completely because they are extremely space efficient creatures when it comes to their genomes!
-So, I wanted an transparent value that would still allow for sections of the graph to be densely coloured with these overlapping genes, but still for the most part have all points visible.
+So, I wanted an transparent value that would still allow for sections of the graph to be densely coloured with these overlapping genes, but for the most part have all points visible.
 
 One of the benefits of interactive graphics is that the user is able to zoom in on any area of the graph they wish.
 So, segments of the genome that do have high gene density can be zoomed in on and looked at in more detail until the overlap is reduced.
@@ -171,6 +174,7 @@ I thought it would be really neat if I could colour the genes based on their pro
 For example, most genes are annotated by COG categories which tell you about the function of those genes such as Translation, Cell Motility, and Replication and Repair.
 It would be cool to have this information associated with each gene and then be able to have the user select and highlight all genes from one COG category to see how they are dispersed across the genome as well as their associated gene expression.
 Unfortunately, I would have to do a bit more analysis and Python coding to obtain this information and add it to my data set.
+
 I also think it would be neat to add on a search bar where the user could specify a particular gene, and then highlight that on the graph.
 I think that I would need to develop a shiny app in order to do this, but it would be really useful for people who study a particular gene or set of genes and they wanted to see where they fall relative to the origin of replication and what their associated gene expression value is.
 
