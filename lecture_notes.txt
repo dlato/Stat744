@@ -480,4 +480,34 @@ Nov 5, 2019: Visualizing High Dimensional Data
 	- ellipses are a way to represents groups, but not really the best way sometimes
 	- can make bigger shapes that are not ellipse, but still captures the data and how it is varied
 	- PCA is most common projection method, think about if it makes sense for your data
-	- 
+
+Nov 8, 2019: 
+	- talking about metagenomics, you could say ok how much does each protein show up in each soil, and also what is the composition of each soil, what proteins are in each soil
+	- so thinking about high dim data we can think about our data comparing in both these ways
+	- with the decathalon data, sometimes the high numbers are good (like jumping longer in long jump) but sometimes high numbers are bad, like any running event we want to run this distance in the fastest time. so he cleaned up the data so the running events are negative so that all the high numbers are good.
+	- pairs plots are usefull bc we can compare all the pairs of stuff, show distribution of variables, how each variable relates to eachother, lable by groups, BUT when you have more than 5-6 variables it becomes a disaster
+	- and is super slow the more variables you have
+	- heat map can already give away some answers about our data, so heat map is good for more data
+	- heat maps put the events in an order, and puts the ppl in order by making a tree. and it shows you the tree which can be good or not good
+	- DO NOT MAKE A HEAT MAP UNLESS YOU SCALE THE DATA (using scale in r, base R makes a matrix with atributes when you use scale, so be careful, drop is another command that can make a one column matrix into a vector, tidy framework might be good)
+	- can alter the heatmap so that it is "bigger" and combining squares
+	- colours on heat maps are fun
+	- can make it "bigger" by making a correlation heat map, so with correlation with each of the pairs to show things
+	- this correlation heat map makes it easier to show the groups
+	- can do it for the events, or for the athletes, how to order these is a big and hard question, like what order you put the thigns
+	- can also do decomposition and dimension reduction, start with PCA, it takes high dim data and writes it in a nice way, but yeah gets weird usually when we talk about biology bc we could have negative components and values
+	- there is something called non-negative combinations of non-negative components (NMF) but this is really hard to do in practice
+	- there are other approaches that do something like PCA but without a eucliedian assumption, which can be good bc sometimes with eco data or bio data we dont have things that fit into euclidean space.
+	- if your measures are highly parallel and have the same units and variables that have more variance to be more important then you would NOT scale. otherwise you should scale before PCA
+	- tidyverse does not like row names, which is not always good and can mean that you lost your meta-data, there is some sort of add row names as columns so that it does not lose anything
+	- so basically PCA is really good if you have high dim data so that you can see whats up and maybe try to figure out what to do next and how to show things next
+	- not really any scale to eigenvectors...or be careful about the scales and what they mean, cant really compare the eigen vects to the pts (biplot)
+	- scores in PCA are values you associate with the ppl, loadings are values you associate with the measures
+	- and scaling them is an issue 
+	- so R stores matricies in column order, so a matrix is a stack of the columns, so this becomes an issue when we want to multiply a matrix by a vector bc it tries to turn the vector into a matrix to multiply it by, so we really want to end up with taking the col of the matrix and multiply it by the value in the vector, so the sweep function is what can fix this and make sure that you are doing what you actually want to be doing
+	- loadings are a way for us to look at all the PCAs and makes like a heat map, and we can see how important the PCAs are as you keep goind, so the colours fade for the further PCAs to show that they are not really that important bc they do not explain as much of the variance as the first couple of PCAs
+	- heat maps are good bc they are showing all the data, and the PCA or correlation heat map does not show all the data, it shows more of a summary
+	- so we can use a parallel coordinate plot that can still show all the data but give a bit more info?
+	- andrews plot: tries to show things using fourier coeffs, and cycles through (sine and pi stuff...???)
+	- weighted scoares and loadings could potentially give us a more coherent ordering of the events or variables and then we could combine that with the andrews plot and other stuff so that we can maybe have a better visualization of the data
+	 - 
