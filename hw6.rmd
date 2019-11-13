@@ -66,6 +66,8 @@ This also means that for a particular site in the genome, I have 11 data points,
 Again, this takes time to read in and to run on my laptop so I have condensed the data into total number of substitutions over 10,000bp segments of the genome.
 This binned data can be found [here](https://github.com/dlato/Stat744/blob/master/binned_dat.csv).
 
+JD: What did you do about the 11 different nodes when you condensed? 
+
 ```{r, data_read}
 chrom_datafile <- "binned_dat.csv"
 chrom_data <- read.csv(chrom_datafile)
@@ -226,3 +228,11 @@ rgl <- (base_g
 )
 rgl
 ```
+
+JD: Thoughtful and attractive. If you know where the labels should go, there should be a way to do that directly. Probably geom_text or geom_label.
+
+The number of substitutions graph would be worth looking at on a log(1+p) scale; it's hard to tell what patterns might be there with the NPCs (it might be tricky to do this and also number in thousands, but probably there's a way) – scientifically otoh I'm not sure I would bother with number of substitutions (rather than proportion) broken out by coding type at all.
+
+Mark 2.4/3.0 (very good)
+
+PS: A note unrelated to your HW -- I use .tsv for tab-separated data.
