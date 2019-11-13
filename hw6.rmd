@@ -229,8 +229,10 @@ rgl <- (base_g
 rgl
 ```
 
-JD: Thoughtful and attractive. There should be a way to do direct labels and have better control over where they go. In this case, it seems like there should be good places for them without extending the axes (although I wouldn't know how to do it, we could ask BB if you're interested).
+JD: Thoughtful and attractive. If you know where the labels should go, there should be a way to do that directly. Probably geom_text or geom_label.
 
 The number of substitutions graph would be worth looking at on a log(1+p) scale; it's hard to tell what patterns might be there with the NPCs (it might be tricky to do this and also number in thousands, but probably there's a way) – scientifically otoh I'm not sure I would bother with number of substitutions (rather than proportion) broken out by coding type at all.
 
-Mark 2.4/30 (very good)
+Mark 2.4/3.0 (very good)
+
+PS: A note unrelated to your HW -- I use .tsv for tab-separated data.
