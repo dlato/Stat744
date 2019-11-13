@@ -75,6 +75,7 @@ All of the datasets are looking at how the response variables change with distan
 Bacterial replicons begin DNA replication from the origin of replication, and this continues in both directions around the (often) circular chromosome.
 Some bacteria for example \strep
 have a single linear chromosome that also replicates from a single origin of replication located roughly in the middle of the replicon, and continues in both directions until the ends of the chromosome are reached.
+
 There are certain properties that are believed to be associated with distance from the origin of replication.
 Replication errors are less frequent near the origin of replication, and as a result, genes that are considered "core" or essential to the survival of the organism are often located in this area.
 Genes that are more accessory to the function of an organism are therefore located near the terminus of replication (located about half way around the genome in circular bacterial genomes, and at the chromosome ends of linear bacterial genomes).
@@ -87,6 +88,9 @@ Genes that are essential and highly conserved are generally located near the ori
 These genes are additionally often highly expressed because they are so important.
 
 This leaves us with three predictions for our data sets:
+
 1. The number of substitutions should increase when moving away from the origin of replication
+
 2. Gene expression should decrease when moving away from the origin of replication
-3. Genes under neutral or purifying selection should be found near the origin of replication, any genes that are under positive selection should be located near the terminus
+
+3. Most genes should be under neutral or purifying selection, any genes that are under positive selection should be located near the terminus
