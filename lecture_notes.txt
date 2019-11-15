@@ -510,4 +510,20 @@ Nov 8, 2019:
 	- so we can use a parallel coordinate plot that can still show all the data but give a bit more info?
 	- andrews plot: tries to show things using fourier coeffs, and cycles through (sine and pi stuff...???)
 	- weighted scoares and loadings could potentially give us a more coherent ordering of the events or variables and then we could combine that with the andrews plot and other stuff so that we can maybe have a better visualization of the data
-	 - 
+
+Nov 15, 2019: Network Visualization:
+	- thinnk about networks as pairwise interactions
+	- these can also be directed and undirected
+	- weighted networks have different importance to the edges
+	- can have multipartite networks but mostly they are bipartite networks
+	- position on the graph should reflect the position in the network, hard to determine sometimes so that visually it looks nice
+	- figuring out how to put the points so that there are less tangles, this is complicated and there are algorithms that do this for you. but they can take a long time to run depending on the data set size, or whatever
+	- still try to think about the data vis stuff we have learned about when creating these graphs
+	- try not to use thickness of edges to denote something important bc we cant really tell the difference
+	- can use curvature to get multi nodal edges out of the way (so things are not hidden)
+	- dont drop weights without reason
+	- and sometimes this comes by making it more readable 
+	- length is hard to tell the difference with, we are better at distinguishing same widths of the edges
+	- so the decisions you make are very dependent on how much data you have, bc the more data you have its harder to see things
+	- always set seed so that you can get the same layouts each time you run your graph
+	- 
