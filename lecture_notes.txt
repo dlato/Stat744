@@ -526,4 +526,15 @@ Nov 15, 2019: Network Visualization:
 	- length is hard to tell the difference with, we are better at distinguishing same widths of the edges
 	- so the decisions you make are very dependent on how much data you have, bc the more data you have its harder to see things
 	- always set seed so that you can get the same layouts each time you run your graph
-	- 
+
+Nov 19, 2019: Colours!
+	- library(dichromat) is good for looking at what your stuff looks like to someone who is colour blind
+	- alpha scale on the pts in ggplot can make them more transparent, but not completely transparent
+	- or you can find the background colour and then make your scale to go from the colour to the background colour
+	- if you are drawing big areas, then you want to use light and non-saturated colour, bc it hurts the eyes. if you are drawing lines or small pts, then they SHOULD be saturated
+	- sequential or diverging paletts depending on what you want to show, and qualitative palates, hard to choose the colours
+	- demo package (demo colour?) it shows the colour palette you want and then what it would look like in different graphs
+	- colorspace package is good, bc it has lots of colours and has all the ggplot stuff built in
+	- black blue and green, black blue and red
+	- if you want brighter colours then impact luminance
+	- green is much brighter than red if you are going to use them together, and have them in the same order as a what a traffic light would be.
